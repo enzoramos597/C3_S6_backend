@@ -1,0 +1,17 @@
+<h2>Crear Película</h2>
+
+<% if (errores.length > 0) { %>
+    <ul>
+        <% errores.forEach(e => { %>
+            <li style="color: red;"><%= e.msg %></li>
+        <% }) %>
+    </ul>
+<% } %>
+
+<form action="/peliculas/crear" method="POST">
+    Título: <input type="text" name="original_title" value="<%= old.original_title || '' %>"><br>
+    Detalle: <input type="text" name="detalle" value="<%= old.detalle || '' %>"><br>
+    Poster: <input type="text" name="poster" value="<%= old.poster || '' %>"><br>
+
+    <button type="submit">Guardar</button>
+</form>

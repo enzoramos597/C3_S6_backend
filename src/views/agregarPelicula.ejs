@@ -1,0 +1,192 @@
+<section>
+<div class="container mx-auto">
+  <div class="text-center mb-6">
+    <h1 class="text-3xl font-extrabold">Agregar Película - Completar los Campos</h1>
+  </div>
+
+  <div class="max-w-xl mx-auto bg-white p-6 rounded shadow">
+    <form>
+
+      <!-- Título -->
+      <div class="mb-4">
+        <label class="block font-bold mb-2">Título Original</label>
+        <input type="text" id="original_title" class="w-full border rounded p-2" placeholder="Ej. The Batman">
+        <span id="error-original_title" class="text-red-500 text-sm error"></span>
+      </div>
+
+      <!-- Detalle -->
+      <div class="mb-4">
+        <label class="block font-bold mb-2">Detalle</label>
+        <textarea id="detalle" class="w-full border rounded p-2" placeholder="Sinopsis..."></textarea>
+        <span id="error-detalle" class="text-red-500 text-sm error"></span>
+      </div>
+
+      <!-- Actores -->
+      <div class="mb-4">
+        <label class="block font-bold mb-2">Actores (separados por coma)</label>
+        <input type="text" id="actores" class="w-full border rounded p-2" placeholder="Ej. Robert Pattinson, Zoe Kravitz">
+        <span id="error-actores" class="text-red-500 text-sm error"></span>
+      </div>
+
+      <!-- Poster -->
+      <div class="mb-4">
+        <label class="block font-bold mb-2">Poster (URL)</label>
+        <input type="text" id="poster" class="w-full border rounded p-2" placeholder="URL del poster">
+        <span id="error-poster" class="text-red-500 text-sm error"></span>
+      </div>
+
+      <!-- Género -->
+      <div class="mb-4">
+        <label class="block font-bold mb-2">Género (separados por coma)</label>
+        <input type="text" id="genero" class="w-full border rounded p-2" placeholder="Ej. Acción, Drama">
+        <span id="error-genero" class="text-red-500 text-sm error"></span>
+      </div>
+
+      <!-- Director -->
+      <div class="mb-4">
+        <label class="block font-bold mb-2">Director (separados por coma)</label>
+        <input type="text" id="director" class="w-full border rounded p-2" placeholder="Ej. Matt Reeves">
+        <span id="error-director" class="text-red-500 text-sm error"></span>
+      </div>
+
+      <!-- Type -->
+      <div class="mb-4">
+        <label class="block font-bold mb-2">Tipo (movie o series)</label>
+        <input type="text" id="type" class="w-full border rounded p-2" placeholder="Ej. movie, series">
+        <span id="error-type" class="text-red-500 text-sm error"></span>
+      </div>
+
+      <!-- Link -->
+      <div class="mb-4">
+        <label class="block font-bold mb-2">Link</label>
+        <input type="text" id="link" class="w-full border rounded p-2" placeholder="Ej. https://youtube.com/trailer">
+        <span id="error-link" class="text-red-500 text-sm error"></span>
+      </div>
+
+      <!-- Año -->
+      <div class="mb-4">
+        <label class="block font-bold mb-2">Año</label>
+        <input type="number" id="anio" class="w-full border rounded p-2" placeholder="Ej. 2022">
+        <span id="error-anio" class="text-red-500 text-sm error"></span>
+      </div>
+
+      <!-- Estado -->
+      <div class="mb-4">
+        <label class="block font-bold mb-2">Estado</label>
+        <select id="estado" class="w-full border rounded p-2">
+          <option value="activo">Activo</option>
+          <option value="inactivo">Inactivo</option>
+        </select>
+        <span id="error-estado" class="text-red-500 text-sm error"></span>
+      </div>
+
+      <!-- Usuario
+      <div class="mb-4">
+        <label class="block font-bold mb-2">ID del Usuario (creador)</label>
+        <input type="text" id="usuario" class="w-full border rounded p-2" placeholder="Id del usuario que agrega">
+        <span id="error-usuario" class="text-red-500 text-sm error"></span>
+      </div> -->
+
+      <!-- Mensaje de éxito -->
+      <div id="success-message" class="hidden p-4 mb-4 text-white rounded bg-green-600">
+        Película agregada correctamente.
+      </div>
+
+      <!-- Botones -->
+      <div class="flex items-center justify-center gap-8">
+        <button type="button" onclick="GuardarPelicula()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Agregar</button>
+        <button type="button" onclick="window.location = '/../'" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Cancelar</button>
+      </div>
+
+    </form>
+    <br>
+  </div>
+</div>
+
+<script>
+function GuardarPelicula() {
+
+  document.querySelectorAll(".error").forEach(el => el.textContent = "");
+
+  const original_title = document.getElementById('original_title').value.trim();
+  const detalle = document.getElementById('detalle').value.trim();
+  const actores = document.getElementById('actores').value.trim().split(',').map(a => a.trim());
+  const poster = document.getElementById('poster').value.trim();
+  const genero = document.getElementById('genero').value.trim().split(',').map(g => g.trim());
+  const director = document.getElementById('director').value.trim().split(',').map(d => d.trim());
+  const type = document.getElementById('type').value.trim().split(',').map(t => t.trim());
+  const link = document.getElementById('link').value.trim();
+  const anioStr = document.getElementById('anio').value.trim();
+  const estado = document.getElementById('estado').value.trim();
+  //const usuario = document.getElementById('usuario').value.trim();
+
+  const anio = parseInt(anioStr);
+
+  let errores = [];
+
+  if (!original_title || original_title.length < 2)
+    errores.push({ field: 'original_title', message: 'El título es obligatorio y debe tener al menos 2 caracteres.' });
+
+  if (!detalle || detalle.length < 5)
+    errores.push({ field: 'detalle', message: 'El detalle es obligatorio.' });
+
+  if (!poster)
+    errores.push({ field: 'poster', message: 'El poster es obligatorio.' });
+
+  if (isNaN(anio) || anio <= 1900)
+    errores.push({ field: 'anio', message: 'Año inválido.' });
+
+  {/*if (!usuario || usuario.length < 5)
+    errores.push({ field: 'usuario', message: 'Debe ingresar un ID de usuario válido.' });*/}
+
+  if (errores.length > 0) {
+    errores.forEach(error => {
+      const span = document.getElementById(`error-${error.field}`);
+      if (span) span.textContent = error.message;
+    });
+    alert('Por favor, corregí los errores antes de guardar.');
+    return;
+  }
+
+  if (!confirm("¿Estás seguro que quieres agregar esta película?")) return;
+
+  const body = {
+    original_title,
+    detalle,
+    actores,
+    poster,
+    genero,
+    Director: director,
+    type,
+    link,
+    anio,
+    estado
+    //usuario
+  };
+
+  fetch('/agregarPelicula', {
+    method: 'POST',
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.result === 'success') {
+        const successMessage = document.getElementById('success-message');
+        successMessage.classList.remove('hidden');
+
+        setTimeout(() => {
+          window.location.href = '/../';
+        }, 2000);
+      } else {
+        alert("Error al guardar la película.");
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Ocurrió un error inesperado.");
+    });
+}
+</script>
+
+</section>

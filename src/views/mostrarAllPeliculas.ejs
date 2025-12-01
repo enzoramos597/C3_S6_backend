@@ -1,0 +1,117 @@
+<section>
+    <br>
+    <div class="text-shadow-md flex items-center justify-center text-4xl text-gray-500">
+        <h1>Lista de Películas</h1>
+    </div>
+    <br>
+
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-100 dark:text-gray-500">
+            <thead class="text-xs text-blue uppercase bg-gray-900 border-b border-black-400 dark:text-black">
+                <tr>
+                    <th class="px-6 py-3">Título</th>
+                    <th class="px-6 py-3">Detalle</th>
+                    <th class="px-6 py-3">Actores</th>
+                    <th class="px-6 py-3">Poster</th>
+                    <th class="px-6 py-3">Géneros</th>
+                    <th class="px-6 py-3">Directores</th>
+                    <th class="px-6 py-3">Tipo</th>
+                    <th class="px-6 py-3">Año</th>
+                    <th class="px-6 py-3">Estado</th>
+                    <th class="px-6 py-3">Creador</th>
+                    <th class="px-8 py-5">Acción</th>
+                </tr>
+            </thead>
+
+            <% peliculasFormateadas.forEach((peli) => { %>
+            <tbody>
+                <tr class="bg-gray-600 border-b border-blue-400 hover:bg-gray-400">
+
+                    <!-- Título Original -->
+                    <td class="px-6 py-4 font-medium text-blue-50 whitespace-nowrap">
+                        <%= peli["Título Original"] %>
+                    </td>
+
+                    <!-- Detalle -->
+                    <td class="px-6 py-4">
+                        <%= peli.Detalle %>
+                    </td>
+
+                    <!-- Actores -->
+                    <td class="px-6 py-4">
+                        <%= Array.isArray(peli.Actores) ? peli.Actores.join(", ") : peli.Actores %>
+                    </td>
+
+                    <!-- Poster -->
+                    <td class="px-6 py-4">
+                        <img src="<%= peli.Poster %>" alt="Poster" class="w-20 h-28 rounded shadow">
+                    </td>
+
+                    <!-- Géneros -->
+                    <td class="px-6 py-4">
+                        <%= Array.isArray(peli["Género"]) ? peli["Género"].join(", ") : peli["Género"] %>
+                    </td>
+
+                    <!-- Directores -->
+                    <td class="px-6 py-4">
+                        <%= Array.isArray(peli.Director) ? peli.Director.join(", ") : peli.Director %>
+                    </td>
+
+                    <!-- Tipo -->
+                    <td class="px-6 py-4">
+                        <%= Array.isArray(peli.Tipo) ? peli.Tipo.join(", ") : peli.Tipo %>
+                    </td>
+
+                    <!-- Año -->
+                    <td class="px-6 py-4">
+                        <%= peli.Año %>
+                    </td>
+
+                    <!-- Estado -->
+                    <td class="px-6 py-4">
+                        <%= peli.Estado %>
+                    </td>
+
+                    <!-- Creador -->
+                    <td class="px-6 py-4">
+                        <%= peli["Agregada por (Usuario)"] ?? "—" %>
+                    </td>
+
+                    <!-- Acciones -->
+                    <td class="px-8 py-5">
+                        <a onclick="editar('<%= peli.id %>')" 
+                           class="font-medium text-white hover:underline hover:cursor-pointer">Edit |</a>
+
+                        <a onclick="eliminar('<%= peli.id %>')" 
+                           class="font-medium text-white hover:underline hover:cursor-pointer">Eliminar</a>
+                    </td>
+                </tr>
+            </tbody>
+            <% }) %>
+        </table>
+        <br>
+    </div>
+
+    <script>
+        function editar(id) {
+            window.location.href = '/modificarPelicula-id/' + id;
+        }
+
+        function eliminar(id) {
+            console.log(id)
+            if (!confirm("¿Seguro que deseas eliminar esta película?")) return;
+
+            fetch('eliminarPelicula/' + id, { method: 'delete' })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.result === 'success') {
+                        alert("Película eliminada con éxito.");
+                        window.location.reload();
+                    } else {
+                        alert("Error al eliminar la película.");
+                    }
+                });
+        }
+    </script>
+
+</section>

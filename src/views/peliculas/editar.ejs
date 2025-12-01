@@ -1,0 +1,9 @@
+<h2>Editar Película</h2>
+
+<form action="/peliculas/editar/<%= pelicula._id %>" method="POST">
+    Título: <input type="text" name="original_title" value="<%= pelicula.original_title %>"><br>
+    Detalle: <input type="text" name="detalle" value="<%= pelicula.detalle %>"><br>
+    Poster: <input type="text" name="poster" value="<%= pelicula.poster %>"><br>
+
+    <button type="submit">Actualizar</button>
+</form>

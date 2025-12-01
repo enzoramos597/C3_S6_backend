@@ -1,0 +1,195 @@
+<section>
+  <br>
+  <div class="container ml-auto mr-auto flex flex-wrap items-start mt-0">
+    <br>
+    <div class="w-full pl-2 pr-2 mb-4 mt-4">
+      <h1 class="text-3xl font-extrabold text-center">Modificar Película - Completar los Campos</h1>
+    </div>
+  </div>
+
+  <div class="container ml-auto mr-auto flex items-center justify-center">
+    <div class="w-full md:w-1/2">
+
+      <!-- Formulario -->
+      <form>
+
+        <!-- Título -->
+        <div class="mb-4">
+          <label class="block font-bold mb-2">Título Original</label>
+          <input type="text" id="original_title" value="<%= pelicula.original_title %>" class="w-full border rounded p-2">
+          <span id="error-original_title" class="text-red-500 text-sm error"></span>
+        </div>
+
+        <!-- Detalle -->
+        <div class="mb-4">
+          <label class="block font-bold mb-2">Detalle</label>
+          <textarea id="detalle" class="w-full border rounded p-2"><%= pelicula.detalle %></textarea>
+          <span id="error-detalle" class="text-red-500 text-sm error"></span>
+        </div>
+
+        <!-- Actores -->
+        <div class="mb-4">
+          <label class="block font-bold mb-2">Actores (separados por coma)</label>
+          <input type="text" id="actores" value="<%= pelicula.actores.join(', ') %>" class="w-full border rounded p-2">
+          <span id="error-actores" class="text-red-500 text-sm error"></span>
+        </div>
+
+        <!-- Poster -->
+        <div class="mb-4">
+          <label class="block font-bold mb-2">Poster (URL)</label>
+          <input type="text" id="poster" value="<%= pelicula.poster %>" class="w-full border rounded p-2">
+          <span id="error-poster" class="text-red-500 text-sm error"></span>
+        </div>
+
+        <!-- Género -->
+        <div class="mb-4">
+          <label class="block font-bold mb-2">Género (separados por coma)</label>
+          <input type="text" id="genero" value="<%= pelicula.genero.join(', ') %>" class="w-full border rounded p-2">
+          <span id="error-genero" class="text-red-500 text-sm error"></span>
+        </div>
+
+        <!-- Director -->
+        <div class="mb-4">
+          <label class="block font-bold mb-2">Director/es (separados por coma)</label>
+          <input type="text" id="Director" value="<%= pelicula.Director.join(', ') %>" class="w-full border rounded p-2">
+          <span id="error-Director" class="text-red-500 text-sm error"></span>
+        </div>
+
+        <!-- Tipo -->
+        <div class="mb-4">
+          <label class="block font-bold mb-2">Tipo (movies, series) - separados por coma</label>
+          <input type="text" id="type" value="<%= pelicula.type.join(', ') %>" class="w-full border rounded p-2">
+          <span id="error-type" class="text-red-500 text-sm error"></span>
+        </div>
+
+        <!-- Link -->
+        <div class="mb-4">
+          <label class="block font-bold mb-2">Link</label>
+          <input type="text" id="link" value="<%= pelicula.link %>" class="w-full border rounded p-2">
+          <span id="error-link" class="text-red-500 text-sm error"></span>
+        </div>
+
+        <!-- Año -->
+        <div class="mb-4">
+          <label class="block font-bold mb-2">Año</label>
+          <input type="number" id="anio" value="<%= pelicula.anio %>" class="w-full border rounded p-2">
+          <span id="error-anio" class="text-red-500 text-sm error"></span>
+        </div>
+
+        <!-- Estado -->
+        <div class="mb-4">
+          <label class="block font-bold mb-2">Estado</label>
+          <select id="estado" class="w-full border rounded p-2">
+            <option value="activo" <%= pelicula.estado === 'activo' ? 'selected' : '' %>>Activo</option>
+            <option value="inactivo" <%= pelicula.estado === 'inactivo' ? 'selected' : '' %>>Inactivo</option>
+          </select>
+          <span id="error-estado" class="text-red-500 text-sm error"></span>
+        </div>
+
+        <div id="success-message" class="hidden p-4 mb-4 text-white rounded bg-green-600">
+          Película modificada correctamente.
+        </div>
+
+        <br>
+
+        <!-- Botones -->
+        <div class="flex items-center justify-center gap-8">
+          <button type="button"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            onclick="Modificar('<%= pelicula.id %>')">Modificar</button>
+
+          <button type="button"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            onclick="window.location = '/../'">Cancelar</button>
+        </div>
+
+        <br>
+      </form>
+    </div>
+  </div>
+  <br>
+
+  <script>
+    function Modificar(id) {
+
+      document.querySelectorAll(".error").forEach(e => e.textContent = "");
+
+      const original_title = document.getElementById('original_title').value.trim();
+      const detalle = document.getElementById('detalle').value.trim();
+      const actores = document.getElementById('actores').value.split(',').map(a => a.trim());
+      const poster = document.getElementById('poster').value.trim();
+      const genero = document.getElementById('genero').value.split(',').map(g => g.trim());
+      const Director = document.getElementById('Director').value.split(',').map(d => d.trim());
+      const type = document.getElementById('type').value.split(',').map(t => t.trim());
+      const link = document.getElementById('link').value.trim();
+      const anioStr = document.getElementById('anio').value.trim();
+      const estado = document.getElementById('estado').value.trim();
+
+      const anio = parseInt(anioStr);
+
+      let errores = [];
+
+      if (!original_title || original_title.length < 2) {
+        errores.push({ field: 'original_title', message: 'El título es obligatorio y debe tener mínimo 2 caracteres.' });
+      }
+
+      if (!detalle || detalle.length < 5) {
+        errores.push({ field: 'detalle', message: 'El detalle debe tener mínimo 5 caracteres.' });
+      }
+
+      if (!poster || !poster.startsWith("http")) {
+        errores.push({ field: 'poster', message: 'El poster debe ser una URL válida.' });
+      }
+
+      if (isNaN(anio) || anio <= 1900) {
+        errores.push({ field: 'anio', message: 'Año inválido.' });
+      }
+
+      if (errores.length > 0) {
+        errores.forEach(err => {
+          const span = document.getElementById(`error-${err.field}`);
+          if (span) span.textContent = err.message;
+        });
+        alert('Corregí los errores antes de continuar.');
+        return;
+      }
+
+      if (!confirm("¿Seguro que querés modificar esta película?")) return;
+
+      const body = {
+        original_title,
+        detalle,
+        actores,
+        poster,
+        genero,
+        Director,
+        type,
+        link,
+        anio,
+        estado
+      };
+
+      fetch('/modificarPelicula/' + id, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      })
+        .then(r => r.json())
+        .then(data => {
+          if (data.result === 'success') {
+
+            const msg = document.getElementById('success-message');
+            msg.classList.remove('hidden');
+            msg.classList.remove('opacity-0');
+            msg.classList.add('opacity-100');
+
+            setTimeout(() => window.location.href = '/../', 2000);
+
+          } else {
+            alert("Error desde el servidor.");
+          }
+        });
+
+    }
+  </script>
+</section>
