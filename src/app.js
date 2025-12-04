@@ -5,7 +5,11 @@ import routerPeli from "./routes/peliculaRoutes.js";
 import expressLayouts from "express-ejs-layouts";
 import path from "path";
 import { fileURLToPath } from "url";
-
+import "./models/Pelicula.js";
+import "./models/Usuario.js";
+import "./models/Perfil.js";
+import "./models/Role.js";
+import "./models/Permission.js";
 dotenv.config();
 conectarDB();
 

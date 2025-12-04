@@ -21,7 +21,7 @@ export async function obtenerTodosUsuariosController(req, res) {
 
     res.render("usuarios/mostrarAllUsuarios", {
       title: "Lista de Usuarios",
-      usuarios: renderizarListaUsuarios(usuarios),
+      usuariosFormateados: renderizarListaUsuarios(usuarios),  // ✅ AGREGAR "Formateados"
       navbarLinks: [
         { text: "Inicio", href: "/", icon: "/icons/home.svg" },
         { text: "Usuarios", href: "/usuarios", icon: "/icons/user.svg" },

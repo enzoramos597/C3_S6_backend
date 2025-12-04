@@ -13,7 +13,7 @@ import {
     agregarUsuarioController,
     eliminarUsuarioController,
     modificarUsuarioController,
-    mostrarAgregarUsuarioController
+    mostrarAgregarUsuarioController,
 } from '../controllers/usuariosController.js'
 
 
@@ -65,9 +65,8 @@ routerPeli.get("/mostrarUsuarios", obtenerTodosUsuariosController);
 routerPeli.post("/agregarUsuario", agregarUsuarioController);
 routerPeli.put("/modificarUsuario/:id", modificarUsuarioController);
 routerPeli.delete("/eliminarUsuario/:id", eliminarUsuarioController);
-// Formulario agregar usuario
 routerPeli.get("/agregarUsuario", mostrarAgregarUsuarioController);
-
+//routerPeli.get("/modificarUsuario-id", obtenerUsuarioIdController)
 // Crear usuario (POST)
 //routerPeli.post("/agregarUsuario", agregarUsuarioController);
 

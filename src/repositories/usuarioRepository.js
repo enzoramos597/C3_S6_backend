@@ -22,15 +22,18 @@ class UsuarioRepository extends IRepository{
   // OBTENER TODOS LOS USUARIOS
   // =======================================
   async obtenerTodosUsuariosRepository() {
-    return await Usuario.find().populate("perfiles").populate("favoritos");
+    return await Usuario.find()
+      .populate("perfiles")
+      .populate("favoritos")
+      .populate("role");
   }
 
   // =======================================
   // OBTENER USUARIO POR ID
   // =======================================
   async obtenerUsuarioIdRepository(id) {
-    const usuario = await Usuario.findById(id);
-
+    const usuario = await Usuario.findById(id)
+      .populate("role");
     if (!usuario) {
       throw new Error("Usuario no encontrado");
     }

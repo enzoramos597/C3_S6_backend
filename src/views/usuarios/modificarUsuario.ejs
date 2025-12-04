@@ -8,35 +8,35 @@
         <!-- Correo -->
         <div class="mb-4">
           <label class="block font-bold mb-2">Correo</label>
-          <input type="email" id="correo" class="w-full border rounded p-2">
+          <input type="email" id="correo" value="<%= usuario.correo %>" class="w-full border rounded p-2">
           <span id="error-correo" class="text-red-500 text-sm error"></span>
         </div>
 
         <!-- Contraseña -->
         <div class="mb-4">
-          <label class="block font-bold mb-2">Contraseña</label>
-          <input type="password" id="contrasenia" class="w-full border rounded p-2">
+          <label class="block font-bold mb-2">Contraseña (dejar en blanco para no cambiar)</label>
+          <input type="password" id="contrasenia" class="w-full border rounded p-2" placeholder="Nueva contraseña (opcional)">
           <span id="error-contrasenia" class="text-red-500 text-sm error"></span>
         </div>
 
         <!-- Nombre -->
         <div class="mb-4">
           <label class="block font-bold mb-2">Nombre</label>
-          <input type="text" id="name" class="w-full border rounded p-2">
+          <input type="text" id="name" value="<%= usuario.name %>" class="w-full border rounded p-2">
           <span id="error-name" class="text-red-500 text-sm error"></span>
         </div>
 
         <!-- Apellido -->
         <div class="mb-4">
           <label class="block font-bold mb-2">Apellido</label>
-          <input type="text" id="apellido" class="w-full border rounded p-2">
+          <input type="text" id="apellido" value="<%= usuario.apellido %>" class="w-full border rounded p-2">
           <span id="error-apellido" class="text-red-500 text-sm error"></span>
         </div>
 
         <!-- Avatar -->
         <div class="mb-4">
           <label class="block font-bold mb-2">Avatar (URL)</label>
-          <input type="text" id="avatar" class="w-full border rounded p-2" placeholder="URL del avatar">
+          <input type="text" id="avatar" value="<%= usuario.avatar %>" class="w-full border rounded p-2" placeholder="URL del avatar">
           <span id="error-avatar" class="text-red-500 text-sm error"></span>
         </div>
 
@@ -44,8 +44,8 @@
         <div class="mb-4">
           <label class="block font-bold mb-2">Estado</label>
           <select id="estado" class="w-full border rounded p-2">
-            <option value="1">Activo</option>
-            <option value="0">Inactivo</option>
+            <option value="1" <%= usuario.estado === 1 ? 'selected' : '' %>>Activo</option>
+            <option value="0" <%= usuario.estado === 0 ? 'selected' : '' %>>Inactivo</option>
           </select>
           <span id="error-estado" class="text-red-500 text-sm error"></span>
         </div>
@@ -55,26 +55,28 @@
           <label class="block font-bold mb-2">Rol</label>
           <select id="role" class="w-full border rounded p-2">
             <% roles.forEach(r => { %>
-              <option value="<%= r._id %>"><%= r.name %></option>
+              <option value="<%= r._id %>" <%= usuario.role && usuario.role._id && usuario.role._id.toString() === r._id.toString() ? 'selected' : '' %>>
+                <%= r.name %>
+              </option>
             <% }) %>
           </select>
           <span id="error-role" class="text-red-500 text-sm error"></span>
         </div>
 
         <div id="success-message" class="hidden p-4 mb-4 bg-green-600 text-white rounded">
-          Usuario agregado correctamente.
+          Usuario modificado correctamente.
         </div>
 
         <!-- Botones -->
         <div class="flex items-center justify-center gap-8 mt-4">
           <button type="button"
-            onclick="GuardarUsuario()"
+            onclick="ModificarUsuario('<%= usuario._id %>')"
             class="bg-blue-600 hover:bg-blue-800 text-white py-2 px-4 rounded font-bold">
-            Agregar
+            Modificar
           </button>
 
           <button type="button"
-            onclick="window.location='/'"
+            onclick="window.location='/mostrarUsuarios'"
             class="bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded font-bold">
             Cancelar
           </button>
@@ -85,7 +87,7 @@
   </div>
 
 <script>
-  function GuardarUsuario() {
+  function ModificarUsuario(id) {
 
     document.querySelectorAll(".error").forEach(e => e.textContent = "");
 
@@ -102,7 +104,8 @@
     if (!correo || !correo.includes("@"))
       errores.push({ field: "correo", message: "Correo inválido." });
 
-    if (!contrasenia || contrasenia.length < 6)
+    // Contraseña es opcional en modificación
+    if (contrasenia && contrasenia.length < 6)
       errores.push({ field: "contrasenia", message: "La contraseña debe tener mínimo 6 caracteres." });
 
     if (!name || name.length < 2)
@@ -127,7 +130,6 @@
 
     const body = {
       correo,
-      contrasenia,
       name,
       apellido,
       avatar,
@@ -135,8 +137,13 @@
       role
     };
 
-    fetch("/agregarUsuario", {
-      method: "POST",
+    // Solo enviar contraseña si se ingresó una nueva
+    if (contrasenia) {
+      body.contrasenia = contrasenia;
+    }
+
+    fetch("/modificarUsuario/" + id, {
+      method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
     })
@@ -146,10 +153,10 @@
           const msg = document.getElementById("success-message");
           msg.classList.remove("hidden");
 
-          setTimeout(() => window.location = "/", 2000);
+          setTimeout(() => window.location = "/mostrarUsuarios", 2000);
 
         } else {
-          alert(data.mensaje || "Error al guardar el usuario.");
+          alert(data.mensaje || "Error al modificar el usuario.");
         }
       })
       .catch(err => {
