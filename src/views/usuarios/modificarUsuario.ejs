@@ -1,0 +1,162 @@
+<section>
+  <div class="container mx-auto mt-8">
+    <h1 class="text-3xl font-extrabold text-center mb-6">Agregar Usuario</h1>
+
+    <div class="max-w-xl mx-auto bg-white p-6 rounded shadow">
+      <form>
+
+        <!-- Correo -->
+        <div class="mb-4">
+          <label class="block font-bold mb-2">Correo</label>
+          <input type="email" id="correo" class="w-full border rounded p-2">
+          <span id="error-correo" class="text-red-500 text-sm error"></span>
+        </div>
+
+        <!-- Contraseña -->
+        <div class="mb-4">
+          <label class="block font-bold mb-2">Contraseña</label>
+          <input type="password" id="contrasenia" class="w-full border rounded p-2">
+          <span id="error-contrasenia" class="text-red-500 text-sm error"></span>
+        </div>
+
+        <!-- Nombre -->
+        <div class="mb-4">
+          <label class="block font-bold mb-2">Nombre</label>
+          <input type="text" id="name" class="w-full border rounded p-2">
+          <span id="error-name" class="text-red-500 text-sm error"></span>
+        </div>
+
+        <!-- Apellido -->
+        <div class="mb-4">
+          <label class="block font-bold mb-2">Apellido</label>
+          <input type="text" id="apellido" class="w-full border rounded p-2">
+          <span id="error-apellido" class="text-red-500 text-sm error"></span>
+        </div>
+
+        <!-- Avatar -->
+        <div class="mb-4">
+          <label class="block font-bold mb-2">Avatar (URL)</label>
+          <input type="text" id="avatar" class="w-full border rounded p-2" placeholder="URL del avatar">
+          <span id="error-avatar" class="text-red-500 text-sm error"></span>
+        </div>
+
+        <!-- Estado -->
+        <div class="mb-4">
+          <label class="block font-bold mb-2">Estado</label>
+          <select id="estado" class="w-full border rounded p-2">
+            <option value="1">Activo</option>
+            <option value="0">Inactivo</option>
+          </select>
+          <span id="error-estado" class="text-red-500 text-sm error"></span>
+        </div>
+
+        <!-- Role -->
+        <div class="mb-4">
+          <label class="block font-bold mb-2">Rol</label>
+          <select id="role" class="w-full border rounded p-2">
+            <% roles.forEach(r => { %>
+              <option value="<%= r._id %>"><%= r.name %></option>
+            <% }) %>
+          </select>
+          <span id="error-role" class="text-red-500 text-sm error"></span>
+        </div>
+
+        <div id="success-message" class="hidden p-4 mb-4 bg-green-600 text-white rounded">
+          Usuario agregado correctamente.
+        </div>
+
+        <!-- Botones -->
+        <div class="flex items-center justify-center gap-8 mt-4">
+          <button type="button"
+            onclick="GuardarUsuario()"
+            class="bg-blue-600 hover:bg-blue-800 text-white py-2 px-4 rounded font-bold">
+            Agregar
+          </button>
+
+          <button type="button"
+            onclick="window.location='/'"
+            class="bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded font-bold">
+            Cancelar
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+<script>
+  function GuardarUsuario() {
+
+    document.querySelectorAll(".error").forEach(e => e.textContent = "");
+
+    const correo = document.getElementById('correo').value.trim();
+    const contrasenia = document.getElementById('contrasenia').value.trim();
+    const name = document.getElementById('name').value.trim();
+    const apellido = document.getElementById('apellido').value.trim();
+    const avatar = document.getElementById('avatar').value.trim();
+    const estado = document.getElementById('estado').value;
+    const role = document.getElementById('role').value;
+
+    let errores = [];
+
+    if (!correo || !correo.includes("@"))
+      errores.push({ field: "correo", message: "Correo inválido." });
+
+    if (!contrasenia || contrasenia.length < 6)
+      errores.push({ field: "contrasenia", message: "La contraseña debe tener mínimo 6 caracteres." });
+
+    if (!name || name.length < 2)
+      errores.push({ field: "name", message: "El nombre es obligatorio." });
+
+    if (!apellido || apellido.length < 2)
+      errores.push({ field: "apellido", message: "El apellido es obligatorio." });
+
+    if (avatar && !avatar.startsWith("http"))
+      errores.push({ field: "avatar", message: "El avatar debe ser una URL válida." });
+
+    if (!role)
+      errores.push({ field: "role", message: "Debe seleccionar un rol." });
+
+    if (errores.length > 0) {
+      errores.forEach(err => {
+        document.getElementById(`error-${err.field}`).textContent = err.message;
+      });
+      alert("Corregí los errores antes de continuar.");
+      return;
+    }
+
+    const body = {
+      correo,
+      contrasenia,
+      name,
+      apellido,
+      avatar,
+      estado,
+      role
+    };
+
+    fetch("/agregarUsuario", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (data.result === "success") {
+          const msg = document.getElementById("success-message");
+          msg.classList.remove("hidden");
+
+          setTimeout(() => window.location = "/", 2000);
+
+        } else {
+          alert(data.mensaje || "Error al guardar el usuario.");
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Error inesperado.");
+      });
+  }
+</script>
+
+</section>

@@ -1,0 +1,122 @@
+<section>
+<div class="container mx-auto">
+  <div class="text-center mb-6">
+    <h1 class="text-3xl font-extrabold">Agregar Rol - Completar los Campos</h1>
+  </div>
+
+  <div class="max-w-xl mx-auto bg-white p-6 rounded shadow">
+    <form>
+
+      <!-- Nombre del Rol -->
+      <div class="mb-4">
+        <label class="block font-bold mb-2">Nombre del Rol</label>
+        <input type="text" id="name" class="w-full border rounded p-2" placeholder="Ej. admin, editor, user">
+        <span id="error-name" class="text-red-500 text-sm error"></span>
+      </div>
+
+      <!-- Descripción -->
+      <div class="mb-4">
+        <label class="block font-bold mb-2">Descripción</label>
+        <textarea id="description" class="w-full border rounded p-2" placeholder="Descripción del rol..."></textarea>
+        <span id="error-description" class="text-red-500 text-sm error"></span>
+      </div>
+
+      <!-- Permisos -->
+      <div class="mb-4">
+        <label class="block font-bold mb-2">Permisos (IDs separados por coma)</label>
+        <input type="text" id="permissions" class="w-full border rounded p-2" placeholder="Ej. 65aa..., 7bb...">
+        <span id="error-permissions" class="text-red-500 text-sm error"></span>
+      </div>
+
+      <!-- Mensaje de éxito -->
+      <div id="success-message" class="hidden p-4 mb-4 text-white rounded bg-green-600">
+        Rol agregado correctamente.
+      </div>
+
+      <!-- Botones -->
+      <div class="flex items-center justify-center gap-8">
+        <button type="button" onclick="GuardarRole()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Agregar</button>
+        <button type="button" onclick="window.location = '/../'" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Cancelar</button>
+      </div>
+
+    </form>
+    <br>
+  </div>
+</div>
+
+<script>
+function GuardarRole() {
+
+  document.querySelectorAll(".error").forEach(el => el.textContent = "");
+
+  const name = document.getElementById('name').value.trim();
+  const description = document.getElementById('description').value.trim();
+  const permissions = document.getElementById('permissions').value.trim()
+      .split(',')
+      .map(p => p.trim())
+      .filter(p => p.length > 0);
+
+  let errores = [];
+
+  if (!name || name.length < 2)
+    errores.push({ field: 'name', message: 'El nombre del rol es obligatorio y debe tener al menos 2 caracteres.' });
+
+  if (!description || description.length < 5)
+    errores.push({ field: 'description', message: 'La descripción es obligatoria.' });
+
+  if (permissions.length === 0)
+    errores.push({ field: 'permissions', message: 'Debe ingresar al menos un permiso.' });
+
+  if (errores.length > 0) {
+    errores.forEach(error => {
+      const span = document.getElementById(`error-${error.field}`);
+      if (span) span.textContent = error.message;
+    });
+    alert('Por favor, corregí los errores antes de guardar.');
+    return;
+  }
+
+  if (!confirm("¿Estás seguro que quieres agregar este rol?")) return;
+
+  const body = {
+    name,
+    description,
+    permissions
+  };
+
+  fetch('/agregarRole', {
+    method: 'POST',
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  })
+    .then(async res => {
+      const data = await res.json();
+
+      if (res.ok && data.result === 'success') {
+
+        const successMessage = document.getElementById('success-message');
+        successMessage.classList.remove('hidden');
+
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 2000);
+
+      } else {
+
+        if (data.mensaje && data.mensaje.toLowerCase().includes("rol")) {
+          document.getElementById("error-name").textContent = data.mensaje;
+        } else {
+          alert(data.mensaje || "Error al guardar el rol.");
+        }
+
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Ocurrió un error inesperado.");
+    });
+
+}
+</script>
+
+</section>

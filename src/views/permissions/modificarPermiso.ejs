@@ -1,0 +1,105 @@
+<section>
+  <div class="container mx-auto mt-8">
+    <h1 class="text-3xl font-extrabold text-center mb-6">Editar Permiso</h1>
+
+    <div class="max-w-xl mx-auto bg-white p-6 rounded shadow">
+      <form>
+
+        <!-- NAME -->
+        <div class="mb-4">
+          <label class="font-bold block mb-2">Nombre del Permiso</label>
+          <input
+            type="text"
+            id="name"
+            value="<%= permiso.name %>"
+            class="w-full border p-2 rounded"
+          >
+          <span id="error-name" class="text-red-500 text-sm error"></span>
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div class="mb-4">
+          <label class="font-bold block mb-2">Descripción</label>
+          <textarea
+            id="description"
+            class="w-full border p-2 rounded"
+          ><%= permiso.description %></textarea>
+          <span id="error-description" class="text-red-500 text-sm error"></span>
+        </div>
+
+        <!-- SUCCESS -->
+        <div id="success-message" class="hidden p-4 mb-4 bg-green-600 text-white rounded">
+          Permiso modificado correctamente.
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="flex justify-center gap-8 mt-6">
+          <button
+            type="button"
+            onclick="ModificarPermiso('<%= permiso._id %>')"
+            class="bg-blue-600 hover:bg-blue-800 text-white py-2 px-4 rounded font-bold"
+          >
+            Guardar Cambios
+          </button>
+
+          <button
+            type="button"
+            onclick="window.location='/'"
+            class="bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded font-bold"
+          >
+            Cancelar
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function ModificarPermiso(id) {
+
+      document.querySelectorAll(".error").forEach(e => e.textContent = "");
+
+      const name = document.getElementById("name").value.trim();
+      const description = document.getElementById("description").value.trim();
+
+      let errores = [];
+
+      // VALIDACIONES
+      if (!name || name.length < 2)
+        errores.push({ field: "name", message: "El nombre es obligatorio y debe tener al menos 2 caracteres." });
+
+      if (!description || description.length < 5)
+        errores.push({ field: "description", message: "La descripción es obligatoria y debe contener al menos 5 caracteres." });
+
+      // MOSTRAR ERRORES
+      if (errores.length > 0) {
+        errores.forEach(e => {
+          document.getElementById(`error-${e.field}`).textContent = e.message;
+        });
+        alert("Corregí los errores antes de continuar.");
+        return;
+      }
+
+      // FETCH UPDATE
+      fetch(`/modificarPermiso/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, description })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.result === "success") {
+          document.getElementById("success-message").classList.remove("hidden");
+          setTimeout(() => window.location = "/mostrarPermiso", 1500);
+        } else {
+          alert(data.mensaje || "Error al modificar el permiso.");
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Ocurrió un error inesperado.");
+      });
+    }
+  </script>
+</section>

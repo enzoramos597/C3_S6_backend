@@ -1,0 +1,54 @@
+<section>
+  <br>
+  <div class="flex items-center justify-center text-4xl text-gray-500">
+    <h1>Lista de Roles</h1>
+  </div>
+  <br>
+
+  <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <table class="w-full text-sm text-left text-gray-100">
+      <thead class="text-xs uppercase bg-gray-900">
+        <tr>
+          <th class="px-6 py-3">Nombre</th>
+          <th class="px-6 py-3">Descripción</th>
+          <th class="px-6 py-3">Permisos</th>
+          <th class="px-6 py-3">Acciones</th>
+        </tr>
+      </thead>
+
+      <% rolesFormateados.forEach((r) => { %>
+      <tbody>
+        <tr class="bg-gray-600 border-b hover:bg-gray-400">
+
+          <td class="px-6 py-4"><%= r.Nombre %></td>
+          <td class="px-6 py-4"><%= r.Descripción %></td>
+          <td class="px-6 py-4"><%= r.Permisos %></td>
+
+          <td class="px-6 py-4">
+            <a onclick="editar('<%= r.id %>')" class="cursor-pointer text-white hover:underline">Edit |</a>
+            <a onclick="eliminar('<%= r.id %>')" class="cursor-pointer text-white hover:underline">Eliminar</a>
+          </td>
+        </tr>
+      </tbody>
+      <% }) %>
+    </table>
+  </div>
+
+  <script>
+    function editar(id) {
+      window.location.href = "/modificarRole-id/" + id;
+    }
+    function eliminar(id) {
+      if (!confirm("¿Seguro que deseas eliminar este rol?")) return;
+
+      fetch("/eliminarRole/" + id, { method: "delete" })
+        .then(r => r.json())
+        .then(data => {
+          if (data.result === "success") {
+            alert("Rol eliminado correctamente");
+            window.location.reload();
+          } else alert("Error al eliminar");
+        });
+    }
+  </script>
+</section>

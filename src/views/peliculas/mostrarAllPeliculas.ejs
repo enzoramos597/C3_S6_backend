@@ -101,7 +101,7 @@
             console.log(id)
             if (!confirm("¿Seguro que deseas eliminar esta película?")) return;
 
-            fetch('eliminarPelicula/' + id, { method: 'delete' })
+            fetch('/eliminarPelicula/' + id, { method: 'delete' })
                 .then(res => res.json())
                 .then(data => {
                     if (data.result === 'success') {

@@ -1,0 +1,104 @@
+<section>
+  <br>
+  <div class="text-shadow-md flex items-center justify-center text-4xl text-gray-500">
+    <h1>Lista de Usuarios</h1>
+  </div>
+  <br>
+
+  <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <table class="w-full text-sm text-left rtl:text-right text-gray-100">
+      <thead class="text-xs text-blue uppercase bg-gray-900 border-b border-black-400">
+        <tr>
+          <th class="px-6 py-3">Correo</th>
+          <th class="px-6 py-3">Nombre</th>
+          <th class="px-6 py-3">Apellido</th>
+          <th class="px-6 py-3">Avatar</th>
+          <th class="px-6 py-3">Estado</th>
+          <th class="px-6 py-3">Rol</th>
+          <th class="px-6 py-3">Perfiles</th>
+          <th class="px-6 py-3">Favoritos</th>
+          <th class="px-8 py-5">Acción</th>
+        </tr>
+      </thead>
+
+      <% usuariosFormateados.forEach((user) => { %>
+      <tbody>
+        <tr class="bg-gray-600 border-b border-blue-400 hover:bg-gray-400">
+
+          <!-- Correo -->
+          <td class="px-6 py-4 font-medium text-blue-50 whitespace-nowrap">
+            <%= user.Correo %>
+          </td>
+
+          <!-- Nombre -->
+          <td class="px-6 py-4">
+            <%= user.Nombre %>
+          </td>
+
+          <!-- Apellido -->
+          <td class="px-6 py-4">
+            <%= user.Apellido %>
+          </td>
+
+          <!-- Avatar -->
+          <td class="px-6 py-4">
+            <img src="<%= user.Avatar %>" alt="Avatar" class="w-16 h-16 rounded-full shadow">
+          </td>
+
+          <!-- Estado -->
+          <td class="px-6 py-4">
+            <%= user.Estado %>
+          </td>
+
+          <!-- Rol -->
+          <td class="px-6 py-4">
+            <%= user.Rol %>
+          </td>
+
+          <!-- Perfiles -->
+          <td class="px-6 py-4">
+            <%= Array.isArray(user.Perfiles) ? user.Perfiles.join(", ") : user.Perfiles %>
+          </td>
+
+          <!-- Favoritos -->
+          <td class="px-6 py-4">
+            <%= Array.isArray(user.Favoritos) ? user.Favoritos.join(", ") : user.Favoritos %>
+          </td>
+
+          <!-- Acciones -->
+          <td class="px-8 py-5">
+            <a onclick="editarUsuario('<%= user.id %>')" 
+               class="font-medium text-white hover:underline hover:cursor-pointer">Edit |</a>
+
+            <a onclick="eliminarUsuario('<%= user.id %>')" 
+               class="font-medium text-white hover:underline hover:cursor-pointer">Eliminar</a>
+          </td>
+        </tr>
+      </tbody>
+      <% }) %>
+    </table>
+    <br>
+  </div>
+
+  <script>
+    function editarUsuario(id) {
+      window.location.href = '/modificarUsuario-id/' + id;
+    }
+
+    function eliminarUsuario(id) {
+      if (!confirm("¿Seguro que deseas eliminar este usuario?")) return;
+
+      fetch('/eliminarUsuario/' + id, { method: 'delete' })
+        .then(res => res.json())
+        .then(data => {
+          if (data.result === 'success') {
+            alert("Usuario eliminado con éxito.");
+            window.location.reload();
+          } else {
+            alert("Error al eliminar el usuario.");
+          }
+        });
+    }
+  </script>
+
+</section>

@@ -22,18 +22,12 @@ const UsuarioSchema = new mongoose.Schema(
     avatar: {
       type: String,
       default:
-        "https://wallpapers.com/images/featured-full/imagenes-de-perfil-de-netflix-62wgyitks6f4l79m.jpg",
+        "https://i.pinimg.com/originals/34/65/cd/3465cda198db3eef055503fbb826e526.jpg",
     },
 
     estado: {
       type: Number,
-      default: 1, // 1 activo, 0 inactivo
-    },
-
-    type: {
-      type: String,
-      enum: ["usuario", "admin"],
-      default: "usuario",
+      default: 1,
     },
 
     perfiles: [
@@ -50,12 +44,16 @@ const UsuarioSchema = new mongoose.Schema(
       },
     ],
 
+    // 🔥 El único que define permisos
     role: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Role",
+      required: true, // recomendable
     },
   },
   { timestamps: true }
 );
 
 export default mongoose.model("Usuario", UsuarioSchema);
+
+

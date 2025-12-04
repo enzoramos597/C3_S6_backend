@@ -1,0 +1,64 @@
+<section>
+  <br>
+  <div class="flex items-center justify-center text-4xl text-gray-500">
+    <h1>Lista de Permisos</h1>
+  </div>
+  <br>
+
+  <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <table class="w-full text-sm text-left text-gray-100">
+      <thead class="text-xs uppercase bg-gray-900">
+        <tr>
+          <th class="px-6 py-3">Nombre</th>
+          <th class="px-6 py-3">Descripción</th>
+          <th class="px-6 py-3">Acciones</th>
+        </tr>
+      </thead>
+
+      <% permisos.forEach((p) => { %>
+      <tbody>
+        <tr class="bg-gray-600 border-b hover:bg-gray-400">
+
+          <!-- NAME -->
+          <td class="px-6 py-4"><%= p.name %></td>
+
+          <!-- DESCRIPTION -->
+          <td class="px-6 py-4"><%= p.description %></td>
+
+          <!-- ACTIONS -->
+          <td class="px-6 py-4">
+            <a onclick="editarPermiso('<%= p._id %>')" class="cursor-pointer text-white hover:underline">Edit |</a>
+            <a onclick="eliminarPermiso('<%= p._id %>')" class="cursor-pointer text-white hover:underline">Eliminar</a>
+          </td>
+
+        </tr>
+      </tbody>
+      <% }) %>
+    </table>
+  </div>
+
+  <script>
+    function editarPermiso(id) {
+      window.location.href = "/modificarPermiso-id/" + id;
+    }
+
+    function eliminarPermiso(id) {
+      if (!confirm("¿Seguro que deseas eliminar este permiso?")) return;
+
+      fetch("/eliminarPermiso/" + id, { method: "DELETE" })
+        .then(r => r.json())
+        .then(data => {
+          if (data.result === "success") {
+            alert("Permiso eliminado correctamente");
+            window.location.reload();
+          } else {
+            alert(data.mensaje || "Error al eliminar");
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Ocurrió un error inesperado.");
+        });
+    }
+  </script>
+</section>

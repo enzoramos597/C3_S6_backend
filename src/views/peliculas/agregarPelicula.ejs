@@ -165,27 +165,39 @@ function GuardarPelicula() {
   };
 
   fetch('/agregarPelicula', {
-    method: 'POST',
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body)
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (data.result === 'success') {
-        const successMessage = document.getElementById('success-message');
-        successMessage.classList.remove('hidden');
+  method: 'POST',
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(body)
+})
+  .then(async res => {
+    const data = await res.json();
 
-        setTimeout(() => {
-          window.location.href = '/../';
-        }, 2000);
+    if (res.ok && data.result === 'success') {
+
+      const successMessage = document.getElementById('success-message');
+      successMessage.classList.remove('hidden');
+
+      setTimeout(() => {
+        window.location.href = '/../';
+      }, 2000);
+
+    } else {
+
+      // 🔥 Nuevo: mostrar el mensaje exacto debajo del input correcto
+      if (data.mensaje && data.mensaje.toLowerCase().includes("película")) {
+        const span = document.getElementById("error-original_title");
+        span.textContent = data.mensaje;
       } else {
-        alert("Error al guardar la película.");
+        alert(data.mensaje || "Error al guardar la película.");
       }
-    })
-    .catch(err => {
-      console.error(err);
-      alert("Ocurrió un error inesperado.");
-    });
+
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Ocurrió un error inesperado.");
+  });
+
 }
 </script>
 

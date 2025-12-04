@@ -1,3 +1,4 @@
+import { error } from "console";
 import Pelicula from "../models/Pelicula.js";
 import IRepository from "./IRepository.js";
 
@@ -15,35 +16,42 @@ class PeliculaRepository extends IRepository {
 
   // Agregar Película
   async agregarPeliculaRepository(data) {
-    const {
-      original_title,
-      detalle,
-      actores,
-      poster,
-      genero,
-      Director,
-      type,
-      link,
-      anio,
-      estado,
-    } = data;
+  const {
+    original_title,
+    detalle,
+    actores,
+    poster,
+    genero,
+    Director,
+    type,
+    link,
+    anio,
+    estado,
+  } = data;
 
-    const newPeli = new Pelicula({
-      original_title,
-      detalle,
-      actores,
-      poster,
-      genero,
-      Director,
-      type,
-      link,
-      anio,
-      estado,
-    });
+  const existe = await Pelicula.findOne({ original_title: original_title.trim() });
 
-    const peliculaGuardada = await newPeli.save();
-    return peliculaGuardada;
+  if (existe) {
+    console.log("pelicula existe");
+    throw new Error(`Pelicula "${original_title}" ya existe`);
   }
+
+  const newPeli = new Pelicula({
+    original_title,
+    detalle,
+    actores,
+    poster,
+    genero,
+    Director,
+    type,
+    link,
+    anio,
+    estado,
+  });
+
+  return await newPeli.save();
+}
+
 
   // Actualizar Película
   async updatePeliculaRepository(id, updateData) {

@@ -31,7 +31,7 @@ export async function obtenerPeliculaIdController(req, res) {
       return res.status(404).send({ mensaje: "Película no encontrada" });
     }
 
-    res.render("modificarPelicula", {
+    res.render("peliculas/modificarPelicula", {
       title: "Modificar Película",
       pelicula,
       navbarLinks: [
@@ -98,7 +98,7 @@ export async function obtenerTodasLasPeliculasController(req, res) {
 
     const peliculasFormateadas = renderizarListaPeliculas(peliculas);
    
-    res.render("mostrarAllPeliculas", {
+    res.render("peliculas/mostrarAllPeliculas", {
       title: "Lista de Películas",
       peliculasFormateadas,
       navbarLinks: [
@@ -121,22 +121,29 @@ export async function obtenerTodasLasPeliculasController(req, res) {
 export async function agregarPeliculaController(req, res) {
   try {
     const datosPelicula = req.body;
-    console.log("Datos de nueva película:", datosPelicula);
-
     const peliculaCreada = await agregarPeliculaService(datosPelicula);
 
-    if (!peliculaCreada) {
-      return res.status(404).send({ mensaje: "No se creó la película" });
-    }
-
-    res.json({ result: "success" });
+    return res.json({ result: "success", data: peliculaCreada });
   } catch (error) {
-    res.status(500).send({
-      mensaje: "Error al crear la Película",
+    console.error("❌ ERROR CONTROLLER:", error.message);
+
+    // Si es duplicado
+    if (error.message.toLowerCase().includes("ya existe")) {
+  return res.status(400).json({
+    result: "error",
+    mensaje: error.message,
+  });
+}
+
+    return res.status(500).json({
+      result: "error",
+      mensaje: "Error interno al crear la película",
       error: error.message,
     });
   }
 }
+
+
 
 // =======================================
 // CONTROLADOR: ELIMINAR PELÍCULA POR ID

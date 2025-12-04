@@ -1,0 +1,107 @@
+<section>
+  <div class="container mx-auto">
+    <div class="text-center mb-6">
+      <h1 class="text-3xl font-extrabold">Agregar Permiso - Completar los Campos</h1>
+    </div>
+
+    <div class="max-w-xl mx-auto bg-white p-6 rounded shadow">
+      <form>
+
+        <!-- Nombre del permiso -->
+        <div class="mb-4">
+          <label class="block font-bold mb-2">Nombre del Permiso</label>
+          <input type="text" id="name" class="w-full border rounded p-2" placeholder="Ej. crear_usuario, eliminar_pelicula">
+          <span id="error-name" class="text-red-500 text-sm error"></span>
+        </div>
+
+        <!-- Descripción -->
+        <div class="mb-4">
+          <label class="block font-bold mb-2">Descripción</label>
+          <textarea id="description" class="w-full border rounded p-2" placeholder="Descripción del permiso..."></textarea>
+          <span id="error-description" class="text-red-500 text-sm error"></span>
+        </div>
+
+        <!-- Mensaje de éxito -->
+        <div id="success-message" class="hidden p-4 mb-4 text-white rounded bg-green-600">
+          Permiso agregado correctamente.
+        </div>
+
+        <!-- Botones -->
+        <div class="flex items-center justify-center gap-8">
+          <button type="button" onclick="GuardarPermiso()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Agregar</button>
+
+          <button type="button" onclick="window.location = '/'" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Cancelar</button>
+        </div>
+
+      </form>
+      <br>
+    </div>
+  </div>
+
+  <script>
+    function GuardarPermiso() {
+
+      document.querySelectorAll(".error").forEach(el => el.textContent = "");
+
+      const name = document.getElementById('name').value.trim();
+      const description = document.getElementById('description').value.trim();
+
+      let errores = [];
+
+      // VALIDACIONES
+      if (!name || name.length < 2)
+        errores.push({ field: 'name', message: 'El nombre del permiso es obligatorio y debe tener al menos 2 caracteres.' });
+
+      if (!description || description.length < 5)
+        errores.push({ field: 'description', message: 'La descripción es obligatoria.' });
+
+      // MOSTRAR ERRORES
+      if (errores.length > 0) {
+        errores.forEach(err => {
+          const span = document.getElementById(`error-${err.field}`);
+          if (span) span.textContent = err.message;
+        });
+        alert('Por favor, corregí los errores antes de guardar.');
+        return;
+      }
+
+      if (!confirm("¿Estás seguro que quieres agregar este permiso?")) return;
+
+      const body = { name, description };
+
+      fetch('/agregarPermiso', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      })
+        .then(async res => {
+          const data = await res.json();
+
+          if (res.ok && data.result === 'success') {
+
+            const successMessage = document.getElementById('success-message');
+            successMessage.classList.remove('hidden');
+
+            setTimeout(() => {
+              window.location.href = '/permisos';
+            }, 2000);
+
+          } else {
+
+            if (data.mensaje && data.mensaje.toLowerCase().includes("permiso")) {
+              document.getElementById("error-name").textContent = data.mensaje;
+            } else {
+              alert(data.mensaje || "Error al guardar el permiso.");
+            }
+
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Ocurrió un error inesperado.");
+        });
+
+    }
+  </script>
+
+</section>
