@@ -7,7 +7,7 @@ import {
   eliminarUsuarioService,
 } from "../services/usuarioService.js";
 
-import { obtenerTodosRolesService } from "../services/roleService.js";
+import { obtenerTodosLosRolesService } from "../services/roleService.js";
 
 import { renderizarListaUsuarios, renderizarUsuario } from "../views/responseViewUsuario.js";
 

@@ -7,23 +7,16 @@ import {
     obtenerTodasLasPeliculasController
 } from '../controllers/peliculasController.js'
 
-{/*import {
+import {
     obtenerTodosUsuariosController,
     obtenerUsuarioIdController,
     agregarUsuarioController,
     eliminarUsuarioController,
     modificarUsuarioController,
     mostrarAgregarUsuarioController
-} from '../controllers/usuariosController.js'*/}
+} from '../controllers/usuariosController.js'
 
-import {
-  obtenerTodosUsuariosController,
-  obtenerUsuarioIdController,
-  agregarUsuarioController,
-  eliminarUsuarioController,
-  modificarUsuarioController,
-  mostrarAgregarUsuarioController
-} from '../controllers/usuarioController.js'
+
 
 import {
     obtenerRoleIdController,    
@@ -69,7 +62,9 @@ routerPeli.delete("/eliminarUsuario/:id", eliminarUsuarioController);*/}
 
 // Mostrar todos
 routerPeli.get("/mostrarUsuarios", obtenerTodosUsuariosController);
-
+routerPeli.post("/agregarUsuario", agregarUsuarioController);
+routerPeli.put("/modificarUsuario/:id", modificarUsuarioController);
+routerPeli.delete("/eliminarUsuario/:id", eliminarUsuarioController);
 // Formulario agregar usuario
 routerPeli.get("/agregarUsuario", mostrarAgregarUsuarioController);
 

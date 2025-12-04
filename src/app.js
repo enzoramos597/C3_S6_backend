@@ -39,9 +39,9 @@ app.get("/agregarPermiso", (req, res) => {
 app.get("/agregarRole", (req, res) => {
   res.render("roles/agregarRole", { title: "Agregar Role" });
 });
-app.get("/agregarUsuario", (req, res) => {
-  res.render("usuarios/agregarUsuario", { title: "Agregar Usuario" });
-});
+//app.get("/agregarUsuario", (req, res) => {
+//  res.render("usuarios/agregarUsuario", { title: "Agregar Usuario" });
+//});
 
 // Static
 app.use(express.static(path.join(__dirname, "../public")));
