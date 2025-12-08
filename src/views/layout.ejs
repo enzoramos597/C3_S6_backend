@@ -6,6 +6,54 @@
     <title><%= title %></title>
     <link rel="stylesheet" href="/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    
+    <!-- 🔥 HELPER DE AUTENTICACIÓN GLOBAL -->
+    <script>
+        // Helper para hacer fetch con token automático
+        function fetchWithAuth(url, options = {}) {
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                alert('Debes iniciar sesión primero');
+                window.location.href = '/login';
+                return Promise.reject('No token');
+            }
+
+            const defaultHeaders = {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            };
+
+            options.headers = {
+                ...defaultHeaders,
+                ...(options.headers || {})
+            };
+
+            return fetch(url, options)
+                .then(async response => {
+                    if (response.status === 401 || response.status === 403) {
+                        const data = await response.json();
+                        alert(data.message || 'Sin autorización');
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                        window.location.href = '/login';
+                        throw new Error(data.message);
+                    }
+                    return response;
+                });
+        }
+
+        // Función para obtener datos del usuario logueado
+        function getCurrentUser() {
+            const userStr = localStorage.getItem('user');
+            return userStr ? JSON.parse(userStr) : null;
+        }
+
+        // Función para verificar si está logueado
+        function isLoggedIn() {
+            return !!localStorage.getItem('token');
+        }
+    </script>
 </head>
 <body>
     <!--Navbar-->

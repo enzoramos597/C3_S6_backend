@@ -1,23 +1,28 @@
 import jwt from 'jsonwebtoken';
 import Usuario from '../models/Usuario.js';
 
-export const authenticateToken = (req, res, next) => {
+export const authenticateToken = ( req, res, next ) => {
     const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Formato: "Bearer TOKEN"
-    
-    if (!token) {
+    const token = authHeader && authHeader.split(' ') [1];
+      // Si no hay token, devolvemos error 401 (No autorizado)
+      if (!token) {
         return res.status(401).json({ message: 'Token no proporcionado' });
     }
 
     try {
+        // Verificamos el token usando la clave secreta
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded; // { id: userId, role: roleId }
+        // Guardamos la información del usuario decodificada en el objeto request
+        req.user = decoded;
+        // Continuamos con la siguiente función middleware
         next();
     } catch (error) {
-        return res.status(403).json({ message: 'Token inválido o expirado' });
-    }
+        // Si el token es inválido, devolvemos error 403 (Prohibido)
+        return res.status(403).json({ message: 'Token inválido' });
+    }    
 };
 
+// Middleware para verificar permisos
 export const hasPermission = (requiredPermission) => {
     return async (req, res, next) => {
         try {
@@ -25,7 +30,6 @@ export const hasPermission = (requiredPermission) => {
                 return res.status(401).json({ message: 'No autenticado' });
             }
 
-            // Buscar usuario con rol y permisos populados
             const user = await Usuario.findById(req.user.id)
                 .populate({
                     path: 'role',
@@ -36,27 +40,19 @@ export const hasPermission = (requiredPermission) => {
                 return res.status(404).json({ message: 'Usuario no encontrado' });
             }
 
-            if (!user.role || !user.role.permissions) {
-                return res.status(403).json({ 
-                    message: 'Usuario sin rol o permisos asignados' 
-                });
-            }
-
-            // Verificar si el permiso existe
             const permissionFound = user.role.permissions.some(
                 perm => perm.name === requiredPermission
             );
 
             if (!permissionFound) {
                 return res.status(403).json({ 
-                    message: `No tienes el permiso: ${requiredPermission}` 
+                    message: 'No tienes permiso para realizar esta acción' 
                 });
             }
 
             next();
         } catch (error) {
-            console.error('Error en hasPermission:', error);
-            res.status(500).json({ message: 'Error verificando permisos' });
+            next(error);
         }
     };
 };

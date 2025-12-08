@@ -105,7 +105,13 @@
 
 <script>
 function GuardarPelicula() {
-
+  // Verificar que el usuario esté logueado
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert('Debes iniciar sesión primero');
+    window.location.href = '/login';
+    return;
+  }
   document.querySelectorAll(".error").forEach(el => el.textContent = "");
 
   const original_title = document.getElementById('original_title').value.trim();
@@ -166,23 +172,28 @@ function GuardarPelicula() {
 
   fetch('/agregarPelicula', {
   method: 'POST',
-  headers: { "Content-Type": "application/json" },
+  headers: { "Content-Type": "application/json",
+  "Authorization": `Bearer ${token}`// 🔥 AGREGAR TOKEN
+  },
   body: JSON.stringify(body)
 })
   .then(async res => {
     const data = await res.json();
+     if (res.status === 401 || res.status === 403) {
+      alert(data.message || 'No tienes permiso para esta acción');
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/login';
+      return;
+    }
 
     if (res.ok && data.result === 'success') {
-
       const successMessage = document.getElementById('success-message');
       successMessage.classList.remove('hidden');
-
       setTimeout(() => {
         window.location.href = '/../';
       }, 2000);
-
     } else {
-
       // 🔥 Nuevo: mostrar el mensaje exacto debajo del input correcto
       if (data.mensaje && data.mensaje.toLowerCase().includes("película")) {
         const span = document.getElementById("error-original_title");
@@ -190,7 +201,6 @@ function GuardarPelicula() {
       } else {
         alert(data.mensaje || "Error al guardar la película.");
       }
-
     }
   })
   .catch(err => {
