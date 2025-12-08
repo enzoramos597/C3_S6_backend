@@ -1,0 +1,22 @@
+<li>
+    <a href="/login" id="btnLoginNavbar">
+        <img src="/icons/user.svg" alt="Usuario">
+        <span id="textoLogin">Iniciar Sesión</span>
+    </a>
+</li>
+
+<script>
+    const token = localStorage.getItem("token");
+    const textoLogin = document.getElementById("textoLogin");
+    const btnLoginNavbar = document.getElementById("btnLoginNavbar");
+
+    if (token) {
+        textoLogin.textContent = "Cerrar Sesión";
+        btnLoginNavbar.addEventListener("click", (e) => {
+            e.preventDefault();
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            window.location.href = "/";
+        });
+    }
+</script>

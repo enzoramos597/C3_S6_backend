@@ -1,11 +1,13 @@
 import Usuario from "../models/Usuario.js";
 import IRepository from "./IRepository.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 class UsuarioRepository extends IRepository{
   // =======================================
   // CREAR USUARIO
   // =======================================
-  async agregarUsuarioRepository(data) {
+  /*async agregarUsuarioRepository(data) {
     const { correo } = data;
 
     // Verificar correo duplicado
@@ -16,7 +18,45 @@ class UsuarioRepository extends IRepository{
 
     const nuevoUsuario = new Usuario(data);
     return await nuevoUsuario.save();
-  }
+  } */
+
+ 
+
+async agregarUsuarioRepository(data) {
+    const { correo, contrasenia } = data;
+
+    // Validar correo duplicado
+    const existe = await Usuario.findOne({ correo: correo.trim().toLowerCase() });
+    if (existe) {
+        throw new Error(`El correo "${correo}" ya existe.`);
+    }
+
+    // Encriptar contraseña
+    const hashedPassword = await bcrypt.hash(contrasenia, 10);
+
+    // Crear usuario con contraseña encriptada
+    const nuevoUsuario = new Usuario({
+        ...data,
+        correo: correo.trim().toLowerCase(),
+        contrasenia: hashedPassword
+    });
+
+    await nuevoUsuario.save();
+
+    // Eliminar la contraseña del objeto antes de devolverlo
+    const usuarioSinPass = nuevoUsuario.toObject();
+    delete usuarioSinPass.contrasenia;
+
+    // (OPCIONAL) Crear token igual que el register original
+    const token = jwt.sign(
+        { id: nuevoUsuario._id },
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" }
+    );
+
+    return { usuario: usuarioSinPass, token };
+}
+
 
   // =======================================
   // OBTENER TODOS LOS USUARIOS

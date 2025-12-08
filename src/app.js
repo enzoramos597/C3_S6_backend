@@ -10,17 +10,32 @@ import "./models/Usuario.js";
 import "./models/Perfil.js";
 import "./models/Role.js";
 import "./models/Permission.js";
+
+import cors from "cors";
+
 dotenv.config();
+const app = express();
 conectarDB();
+
+const corsOptions = {
+  origin: process.env.ALLOWED_ORIGINS?.split(',') || '*',
+  methods: ['GET','POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Content-Range', 'x-Content-Range'],
+  credentials: true,
+  maxAge: 86400
+};
+app.use(cors(corsOptions));
+app.use(express.json());
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const app = express();
+
 
 // Middlewares
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+
 
 // Configuración EJS
 app.set("view engine", "ejs");
@@ -28,9 +43,14 @@ app.set("views", path.join(__dirname, "views"));
 app.use(expressLayouts);
 
 // Vistas
+app.get("/login", (req, res) => {
+    res.render("auth/login", { title: "Login" });
+}); 
+
 app.get("/", (req, res) => {
   res.render("index", { title: "Pagina Principal" });
 });
+
 
 app.get("/agregarPelicula", (req, res) => {
   res.render("peliculas/agregarPelicula", { title: "Agregar Pelicula" });

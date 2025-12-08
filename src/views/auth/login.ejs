@@ -1,0 +1,115 @@
+<section class="login-container">
+
+    <h1 class="titulo-login">Iniciar Sesión</h1>
+
+    <form id="loginForm" class="form-login">
+        <label for="correo">Correo:</label>
+        <input type="email" id="correo" name="correo" required>
+
+        <label for="contrasenia">Contraseña:</label>
+        <input type="password" id="contrasenia" name="contrasenia" required>
+
+        <button type="submit" class="btn-login">Iniciar Sesión</button>
+    </form>
+
+    <p id="usuarioLogueado" class="usuario-logueado" style="display:none;"></p>
+
+</section>
+
+<script>
+    const form = document.getElementById("loginForm");
+    const usuarioLabel = document.getElementById("usuarioLogueado");
+    const btnLogin = document.querySelector(".btn-login");
+
+    // Si ya existe token, mostrar usuario logueado
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+        const user = JSON.parse(savedUser);
+        usuarioLabel.style.display = "block";
+        usuarioLabel.textContent = `Usuario logueado: ${user.correo}`;
+        btnLogin.textContent = "Cerrar Sesión";
+
+        btnLogin.addEventListener("click", (e) => {
+            e.preventDefault();
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            window.location.href = "/";
+        });
+    }
+
+    // LOGIN NORMAL
+    form?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const data = {
+            correo: document.getElementById("correo").value,
+            contrasenia: document.getElementById("contrasenia").value
+        };
+
+        try {
+            const res = await fetch("/api/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+
+            const json = await res.json();
+
+            if (!res.ok) {
+                alert(json.message || "Error al iniciar sesión");
+                return;
+            }
+
+            // GUARDAR TOKEN Y USUARIO
+            localStorage.setItem("token", json.token);
+            localStorage.setItem("user", JSON.stringify(json.user));
+
+            alert("Bienvenido " + json.user.correo);
+
+            window.location.href = "/"; // redirigir al home
+
+        } catch (error) {
+            console.error(error);
+            alert("Error al conectar con el servidor");
+        }
+    });
+</script>
+
+<style>
+    .login-container {
+        width: 400px;
+        margin: 30px auto;
+        padding: 20px;
+        background: #f0f0f0;
+        border-radius: 12px;
+    }
+
+    .form-login {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-login {
+        background: #007bff;
+        color: white;
+        padding: 10px;
+        border: none;
+        cursor: pointer;
+        border-radius: 6px;
+    }
+
+    .btn-login:hover {
+        background: #0056b3;
+    }
+
+    .usuario-logueado {
+        margin-top: 15px;
+        font-size: 18px;
+        text-align: center;
+        color: green;
+        font-weight: bold;
+    }
+</style>

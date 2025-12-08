@@ -1,56 +1,87 @@
-<nav>
-    <div class="navbar">
-        <a href="/">
-            <img src="/images/logo.png" alt="Logo" class="logo">
-        </a>
-        <ul>
-            <li>
-                <a href="/">
-                    <img src="/icons/home.svg" alt="Inicio Icon">
-                    Inicio
-                </a>
-            </li>
-            <li>
-                <a href="/agregarPelicula">
-                    <img src="/icons/AgregarSH.png" alt="Acerca de Icon">
-                    Agregar Peliculas
-                </a>
-                 <a href="/mostrarPelicula">
-                    <img src="/icons/Mostrar.png" alt="Acerca de Icon">
-                    Mostrar Peliculas
-                </a>
-            </li>
-            <li>
-                <a href="/agregarUsuario">
-                    <img src="/icons/AgregarSH.png"alt="Acerca de Icon">
-                    Agregar Usuario
-                </a>
-                <a href="/mostrarUsuarios">
-                    <img src="/icons/Mostrar.png" alt="Acerca de Icon">
-                    Mostrar Usuario
-                </a>
-            </li>
-            <li>
-                <a href="/agregarRole">
-                    <img src="/icons/info4.png" alt="Acerca de Icon">
-                    Agregar Roles
-                </a>
-                <a href="/mostrarRoles">
-                    <img src="/icons/info4.png" alt="Acerca de Icon">
-                    Mostrar Roles
-                </a>
-            </li>
-            <li>
-                <a href="/agregarPermiso">
-                    Agregar Permisos
-                    <img src="/icons/contact.svg" alt="Conctacto Icon">
-                </a>
-                 <a href="/mostrarPermiso">
-                    Mostrar Permisos
-                    <img src="/icons/contact.svg" alt="Conctacto Icon">
-                </a>
-            </li>
-        </ul>
-    </div>
-</nav>
+<nav class="navbar">
 
+    <!-- IZQUIERDA -->
+    <div class="nav-left">
+        <a href="/" class="nav-logo">🏠 Inicio</a>
+    </div>
+
+    <!-- CENTRO -->
+    <div class="nav-center">
+
+        <!-- DROPDOWN PELÍCULAS -->
+        <div class="dropdown">
+            <button class="dropbtn">🎬 Películas ▾</button>
+            <div class="dropdown-content">
+                <a href="/agregarPelicula">➕ Agregar Película</a>
+                <a href="/mostrarPelicula">🔍 Mostrar Películas</a>
+            </div>
+        </div>
+
+        <!-- DROPDOWN USUARIOS -->
+        <div class="dropdown">
+            <button class="dropbtn">👤 Usuarios ▾</button>
+            <div class="dropdown-content">
+                <a href="/agregarUsuario">➕ Agregar Usuario</a>
+                <a href="/mostrarUsuarios">🔍 Mostrar Usuarios</a>
+            </div>
+        </div>
+
+        <!-- DROPDOWN ROLES -->
+        <div class="dropdown">
+            <button class="dropbtn">🧑‍💼 Roles ▾</button>
+            <div class="dropdown-content">
+                <a href="/agregarRole">➕ Agregar Rol</a>
+                <a href="/mostrarRoles">🔍 Mostrar Roles</a>
+            </div>
+        </div>
+
+        <!-- DROPDOWN PERMISOS -->
+        <div class="dropdown">
+            <button class="dropbtn">🧩 Permisos ▾</button>
+            <div class="dropdown-content">
+                <a href="/agregarPermiso">➕ Agregar Permiso</a>
+                <a href="/mostrarPermiso">🔍 Mostrar Permisos</a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- DERECHA -->
+    <div class="nav-right">
+        <a href="/login" class="login-btn" id="btnLoginNavbar">
+            🔐 <span id="textoLogin">Iniciar Sesión</span>
+        </a>
+    </div>
+
+</nav>
+<script>
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user"));
+    const textoLogin = document.getElementById("textoLogin");
+    const btnLoginNavbar = document.getElementById("btnLoginNavbar");
+
+    // Crear etiqueta del usuario
+    const navRight = document.querySelector(".nav-right");
+
+    if (token && user) {
+
+        // Mostrar el nombre del usuario
+        const userLabel = document.createElement("span");
+        userLabel.textContent = `Hola, ${user.name}`;
+        userLabel.className = "user-label";
+        navRight.insertBefore(userLabel, btnLoginNavbar);
+
+        // Cambiar botón
+        textoLogin.textContent = "Cerrar Sesión";
+
+        // Cerrar sesión
+        btnLoginNavbar.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+
+            window.location.href = "/";
+        });
+    }
+</script>

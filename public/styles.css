@@ -1,44 +1,124 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
+/* NAVBAR GENERAL */
 .navbar {
+    width: 100%;
+    background: #202020;
+    padding: 15px 40px;
     display: flex;
-    align-items: center; 
-    background-color: #333;
-    padding: 10px 20px;
+    justify-content: space-between; /* IZQ - CENTRO - DER */
+    align-items: center;
     color: white;
-    justify-content: center;
-    
 }
-.navbar .logo {
-    width: 50px;
-    margin-right: 20px;
-}
-.navbar ul {
-    list-style: none;
+
+/* SECCIÓN IZQUIERDA */
+.nav-left {
     display: flex;
-    gap: 20px;
-    margin: 0;
-    padding: 0;
+    align-items: center;
 }
-.navbar ul li a {
+
+/* SECCIÓN CENTRO (MENÚ) */
+.nav-center {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+/* SECCIÓN DERECHA */
+.nav-right {
+    display: flex;
+    align-items: center;
+}
+
+/* INICIO */
+.nav-logo {
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: 0.2s;
+}
+.nav-logo:hover {
+    color: #7ccf7c;
+    transform: scale(1.08);
+}
+
+/* DROPDOWN MENU */
+.dropdown {
+    position: relative;
+}
+
+.dropbtn {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 17px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.dropbtn:hover {
+    color: #7ccf7c;
+}
+
+/* CUERPO DEL DROPDOWN */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background: #2e2e2e;
+    min-width: 200px;
+    border-radius: 6px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.4);
+    padding: 10px 0;
+    z-index: 2000;
+}
+
+.dropdown-content a {
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: white;
+    transition: 0.2s;
+}
+
+.dropdown-content a:hover {
+    background: #3a3a3a;
+    color: #7ccf7c;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* LOGIN */
+.login-btn {
+    background: #0a84ff;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-weight: bold;
     color: white;
     text-decoration: none;
     display: flex;
-    align-items: center;
-    gap: 5px;
+    gap: 6px;
+    transition: 0.2s;
 }
-.navbar ul li a img {
-    width: 20px;
+
+.login-btn:hover {
+    background: #006fe0;
+    transform: scale(1.05);
 }
+
 footer {
     text-align: center;
     padding: 10px;
-    background-color: #333;
+    background-color: #202020;
     color: white;
     position: fixed;
     bottom: 0;
     width: 100%;
+}
+
+.user-label {
+    margin-right: 15px;
+    font-size: 16px;
+    color: #7ccf7c;
+    font-weight: bold;
 }
