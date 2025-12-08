@@ -43,11 +43,11 @@ const routerPeli = express.Router();
 //routerPeli.post('/register', register);
 routerPeli.post('/api/auth/login', login);
 //Routes Peliculas
-routerPeli.get('/mostrarPelicula', authenticateToken, hasPermission('read:pelicula'), obtenerTodasLasPeliculasController)
-routerPeli.get('/modificarPelicula-id/:id', obtenerPeliculaIdController)
-routerPeli.post('/agregarPelicula', authenticateToken, hasPermission('create:pelicula'), peliculaValidationRules(), validationHandler, agregarPeliculaController);
+routerPeli.get('/mostrarPelicula', authenticateToken, hasPermission('read:peliculas'), obtenerTodasLasPeliculasController)
+routerPeli.get('/modificarPelicula-id/:id', hasPermission('update:peliculas'), obtenerPeliculaIdController)
+routerPeli.post('/agregarPelicula', authenticateToken, hasPermission('create:peliculas'), peliculaValidationRules(), validationHandler, agregarPeliculaController);
 routerPeli.put('/modificarPelicula/:id', peliculaValidationRules(), validationHandler ,modificarPeliculaController);
-routerPeli.delete('/eliminarPelicula/:id', eliminarPeliculaController);
+routerPeli.delete('/eliminarPelicula/:id', authenticateToken, hasPermission('delete:peliculas'), eliminarPeliculaController);
 //Routes Usuarios
 {/*routerPeli.get("/mostrarUsuarios", obtenerTodosUsuariosController);
 routerPeli.get("/usuarios/:id", obtenerUsuarioIdController);
@@ -64,7 +64,7 @@ routerPeli.delete("/eliminarUsuario/:id", eliminarUsuarioController);*/}
 // ================== USUARIOS ==================
 
 // Mostrar todos
-routerPeli.get("/mostrarUsuarios", authenticateToken, obtenerTodosUsuariosController);
+routerPeli.get("/mostrarUsuarios", obtenerTodosUsuariosController);
 routerPeli.post("/agregarUsuario", agregarUsuarioController);
 routerPeli.put("/modificarUsuario/:id", modificarUsuarioController);
 routerPeli.delete("/eliminarUsuario/:id", eliminarUsuarioController);
