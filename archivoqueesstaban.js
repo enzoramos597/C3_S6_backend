@@ -1,0 +1,1 @@
+MONGO_URI=mongodb+srv://enzoramos597:1264597ejr@peliflix.bwqdtpv.mongodb.net/
