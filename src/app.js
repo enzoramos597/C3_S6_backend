@@ -17,38 +17,35 @@ dotenv.config();
 const app = express();
 conectarDB();
 
-// CORS
+// CORS FIXED
 const corsOptions = {
-  origin: process.env.ALLOWED_ORIGINS?.split(',') || '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  exposedHeaders: ['Content-Range', 'x-Content-Range'],
-  credentials: true,
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  exposedHeaders: ["Content-Range", "x-Content-Range"],
   maxAge: 86400
 };
 app.use(cors(corsOptions));
+
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Middleware para leer body
-app.use(express.urlencoded({ extended: true }));
-
-// Static (si lo necesitás)
+// Static
 app.use(express.static(path.join(__dirname, "../public")));
 
-// Rutas de la API
+// Rutas API
 app.use("/api", routerPeli);
-// ejemplo: GET /api/peliculas
-// ejemplo: POST /api/peliculas
 
-// Ruta base (respuesta simple)
+// Ruta base
 app.get("/", (req, res) => {
   res.json({ message: "API funcionando correctamente" });
 });
 
 // Servidor
 app.listen(process.env.PORT, () => {
+  console.log(`🚀 Servidor corriendo en puerto ${process.env.PORT}`);
   console.log(`🚀 Servidor corriendo en http://localhost:${process.env.PORT}`);
 });

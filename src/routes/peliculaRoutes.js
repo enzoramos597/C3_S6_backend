@@ -41,7 +41,7 @@ import { authenticateToken, hasPermission } from '../middleware/authMiddleware.j
 const routerPeli = express.Router();
 
 //routerPeli.post('/register', register);
-routerPeli.post('/api/auth/login', login);
+routerPeli.post('/auth/login', login);
 //Routes Peliculas
 routerPeli.get('/mostrarPelicula', authenticateToken, hasPermission('read:peliculas'), obtenerTodasLasPeliculasController)
 routerPeli.get('/modificarPelicula-id/:id', hasPermission('update:peliculas'), obtenerPeliculaIdController)
