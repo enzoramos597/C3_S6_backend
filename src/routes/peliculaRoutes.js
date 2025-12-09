@@ -65,7 +65,7 @@ routerPeli.delete("/eliminarUsuario/:id", eliminarUsuarioController);*/}
 
 // Mostrar todos
 routerPeli.get("/mostrarUsuarios", authenticateToken, hasPermission('read:usuario'), obtenerTodosUsuariosController);
-routerPeli.post("/agregarUsuario", hasPermission('create:usuario'), agregarUsuarioController);
+routerPeli.post("/agregarUsuario", agregarUsuarioController);
 routerPeli.put("/modificarUsuario/:id", authenticateToken, hasPermission('update:usuario'), modificarUsuarioController);
 routerPeli.delete("/eliminarUsuario/:id", authenticateToken, hasPermission('delete:usuario'),eliminarUsuarioController);
 routerPeli.get("/agregarUsuario", mostrarAgregarUsuarioController);
