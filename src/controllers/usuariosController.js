@@ -8,7 +8,7 @@ import {
 } from "../services/usuarioService.js";
 
 import { obtenerTodosLosRolesService } from "../services/roleService.js";
-
+import Usuario from "../models/Usuario.js";
 import { renderizarListaUsuarios, renderizarUsuario } from "../views/responseViewUsuario.js";
 import Role from "../models/Role.js";
 
