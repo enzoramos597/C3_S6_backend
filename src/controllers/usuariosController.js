@@ -126,24 +126,42 @@ export async function agregarUsuarioController(req, res) {
   try {
     const datos = req.body;
 
-    // Buscar el rol por nombre
+    // ================================
+    // 1. Validar si el correo YA existe
+    // ================================
+    const existeCorreo = await Usuario.findOne({ correo: datos.correo });
+
+    if (existeCorreo) {
+      return res.status(400).json({
+        result: "error",
+        mensaje: `El correo '${datos.correo}' ya está registrado.`,
+      });
+    }
+
+    // ================================
+    // 2. Validar que el rol exista
+    // ================================
     const role = await Role.findOne({ name: datos.role });
 
     if (!role) {
       return res.status(400).json({
         result: "error",
-        mensaje: `El rol '${datos.role}' no existe`
+        mensaje: `El rol '${datos.role}' no existe`,
       });
     }
 
-    // Reemplazar string por ObjectId
+    // Reemplazar rol string → ObjectId real
     datos.role = role._id;
 
+    // ================================
+    // 3. Crear usuario
+    // ================================
     const usuarioCreado = await agregarUsuarioService(datos);
 
     return res.status(201).json({
       result: "success",
-      data: renderizarUsuario(usuarioCreado)
+      mensaje: "Usuario creado correctamente",
+      data: usuarioCreado
     });
 
   } catch (error) {
