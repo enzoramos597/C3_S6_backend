@@ -19,7 +19,7 @@ export async function obtenerTodosUsuariosController(req, res) {
   try {
     const usuarios = await obtenerTodosUsuariosService();
 
-    res.render("usuarios/mostrarAllUsuarios", {
+    {/*res.render("usuarios/mostrarAllUsuarios", {
       title: "Lista de Usuarios",
       usuariosFormateados: renderizarListaUsuarios(usuarios),  // ✅ AGREGAR "Formateados"
       navbarLinks: [
@@ -27,6 +27,10 @@ export async function obtenerTodosUsuariosController(req, res) {
         { text: "Usuarios", href: "/usuarios", icon: "/icons/user.svg" },
         { text: "Contacto", href: "/contact", icon: "/icons/contact.svg" },
       ],
+    });*/}
+    res.json({
+      mensaje: "Usuarios obtenidos correctamente",
+      usuarios
     });
   } catch (error) {
     res.status(500).send({

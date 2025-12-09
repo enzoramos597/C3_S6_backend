@@ -46,7 +46,7 @@ routerPeli.post('/auth/login', login);
 routerPeli.get('/mostrarPelicula', authenticateToken, hasPermission('read:peliculas'), obtenerTodasLasPeliculasController)
 routerPeli.get('/modificarPelicula-id/:id', hasPermission('update:peliculas'), obtenerPeliculaIdController)
 routerPeli.post('/agregarPelicula', authenticateToken, hasPermission('create:peliculas'), peliculaValidationRules(), validationHandler, agregarPeliculaController);
-routerPeli.put('/modificarPelicula/:id', peliculaValidationRules(), validationHandler ,modificarPeliculaController);
+routerPeli.put('/modificarPelicula/:id', authenticateToken,hasPermission('update:peliculas'), peliculaValidationRules(), validationHandler ,modificarPeliculaController);
 routerPeli.delete('/eliminarPelicula/:id', authenticateToken, hasPermission('delete:peliculas'), eliminarPeliculaController);
 //Routes Usuarios
 {/*routerPeli.get("/mostrarUsuarios", obtenerTodosUsuariosController);
@@ -64,10 +64,10 @@ routerPeli.delete("/eliminarUsuario/:id", eliminarUsuarioController);*/}
 // ================== USUARIOS ==================
 
 // Mostrar todos
-routerPeli.get("/mostrarUsuarios", obtenerTodosUsuariosController);
-routerPeli.post("/agregarUsuario", agregarUsuarioController);
-routerPeli.put("/modificarUsuario/:id", modificarUsuarioController);
-routerPeli.delete("/eliminarUsuario/:id", eliminarUsuarioController);
+routerPeli.get("/mostrarUsuarios", authenticateToken, hasPermission('read:usuario'), obtenerTodosUsuariosController);
+routerPeli.post("/agregarUsuario", authenticateToken, hasPermission('create:usuario'), agregarUsuarioController);
+routerPeli.put("/modificarUsuario/:id", authenticateToken, hasPermission('update:usuario'), modificarUsuarioController);
+routerPeli.delete("/eliminarUsuario/:id", authenticateToken, hasPermission('delete:usuario'),eliminarUsuarioController);
 routerPeli.get("/agregarUsuario", mostrarAgregarUsuarioController);
 //routerPeli.get("/modificarUsuario-id", obtenerUsuarioIdController)
 // Crear usuario (POST)
