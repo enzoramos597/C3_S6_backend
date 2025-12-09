@@ -178,7 +178,7 @@ export async function agregarUsuarioController(req, res) {
 // =======================================
 // MODIFICAR USUARIO
 // =======================================
-export async function modificarUsuarioController(req, res) {
+{/*export async function modificarUsuarioController(req, res) {
   try {
     const { id } = req.params;
     const datosActualizados = req.body;
@@ -205,8 +205,65 @@ export async function modificarUsuarioController(req, res) {
       error: error.message,
     });
   }
-}
+}*/}
+export async function modificarUsuarioController(req, res) {
+  try {
+    const { id } = req.params;
+    const datosActualizados = req.body;
 
+    // ====================================
+    // 1. Validar correo único (si lo envía)
+    // ====================================
+    if (datosActualizados.correo) {
+      const existeCorreo = await Usuario.findOne({
+        correo: datosActualizados.correo,
+        _id: { $ne: id } // excluye al propio usuario
+      });
+
+      if (existeCorreo) {
+        return res.status(400).json({
+          result: "error",
+          mensaje: `El correo '${datosActualizados.correo}' ya está en uso.`
+        });
+      }
+    }
+
+    // ====================================
+    // 2. Validar rol (si lo envía)
+    // ====================================
+    if (datosActualizados.role) {
+      const role = await Role.findOne({ name: datosActualizados.role });
+
+      if (!role) {
+        return res.status(400).json({
+          result: "error",
+          mensaje: `El rol '${datosActualizados.role}' no existe`
+        });
+      }
+
+      datosActualizados.role = role._id;
+    }
+
+    // ====================================
+    // 3. Modificar usuario
+    // ====================================
+    const usuarioModificado = await modificarUsuarioService(id, datosActualizados);
+
+    return res.json({
+      result: "success",
+      data: usuarioModificado,
+    });
+
+  } catch (error) {
+    console.error("❌ ERROR CONTROLLER:", error.message);
+
+    return res.status(500).json({
+      result: "error",
+      mensaje: "Error al modificar usuario",
+      error: error.message,
+    });
+  }
+}
 // =======================================
 // ELIMINAR USUARIO
 // =======================================
