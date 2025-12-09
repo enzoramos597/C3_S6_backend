@@ -1,1 +1,3 @@
-MONGO_URI=mongodb+srv://enzoramos597:1264597ejr@peliflix.bwqdtpv.mongodb.net/
+MONGO_URI=mongodb+srv://enzoramos597:1264597ejr@peliflix.bwqdtpv.mongodb.net
+PORT=4000
+JWT_SECRET=mi_secreto_jwt_aqui
