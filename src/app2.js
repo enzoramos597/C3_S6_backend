@@ -2,9 +2,9 @@ import express from "express";
 import dotenv from "dotenv";
 import conectarDB from "./config/db.js";
 import routerPeli from "./routes/peliculaRoutes.js";
+import expressLayouts from "express-ejs-layouts";
 import path from "path";
 import { fileURLToPath } from "url";
-
 import "./models/Pelicula.js";
 import "./models/Usuario.js";
 import "./models/Perfil.js";
@@ -17,10 +17,9 @@ dotenv.config();
 const app = express();
 conectarDB();
 
-// CORS
 const corsOptions = {
   origin: process.env.ALLOWED_ORIGINS?.split(',') || '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET','POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   exposedHeaders: ['Content-Range', 'x-Content-Range'],
   credentials: true,
@@ -32,23 +31,49 @@ app.use(express.json());
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Middleware para leer body
+
+
+// Middlewares
 app.use(express.urlencoded({ extended: true }));
 
-// Static (si lo necesitás)
-app.use(express.static(path.join(__dirname, "../public")));
 
-// Rutas de la API
-app.use("/api", routerPeli);
-// ejemplo: GET /api/peliculas
-// ejemplo: POST /api/peliculas
+// Configuración EJS
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+app.use(expressLayouts);
 
-// Ruta base (respuesta simple)
+// Vistas
+app.get("/login", (req, res) => {
+    res.render("auth/login", { title: "Login" });
+}); 
+
 app.get("/", (req, res) => {
-  res.json({ message: "API funcionando correctamente" });
+  res.render("index", { title: "Pagina Principal" });
 });
 
-// Servidor
+
+app.get("/agregarPelicula", (req, res) => {
+  res.render("peliculas/agregarPelicula", { title: "Agregar Pelicula" });
+});
+
+app.get("/agregarPermiso", (req, res) => {
+  res.render("permissions/agregarPermiso", { title: "Agregar Permiso" });
+});
+
+app.get("/agregarRole", (req, res) => {
+  res.render("roles/agregarRole", { title: "Agregar Role" });
+});
+//app.get("/agregarUsuario", (req, res) => {
+//  res.render("usuarios/agregarUsuario", { title: "Agregar Usuario" });
+//});
+
+// Static
+app.use(express.static(path.join(__dirname, "../public")));
+
+// Rutas
+app.use("/", routerPeli);
+
+// Server
 app.listen(process.env.PORT, () => {
   console.log(`🚀 Servidor corriendo en http://localhost:${process.env.PORT}`);
 });
