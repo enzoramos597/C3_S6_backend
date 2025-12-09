@@ -92,7 +92,7 @@ export async function mostrarAgregarUsuarioController(req, res) {
 // =======================================
 // CREAR USUARIO
 // =======================================
-export async function agregarUsuarioController(req, res) {
+{/*export async function agregarUsuarioController(req, res) {
   try {
     const datos = req.body;
 
@@ -112,6 +112,41 @@ export async function agregarUsuarioController(req, res) {
         mensaje: error.message,
       });
     }
+
+    return res.status(500).json({
+      result: "error",
+      mensaje: "Error interno al crear usuario",
+      error: error.message,
+    });
+  }
+}*/}
+
+export async function agregarUsuarioController(req, res) {
+  try {
+    const datos = req.body;
+
+    // Buscar el rol por nombre
+    const role = await Role.findOne({ name: datos.role });
+
+    if (!role) {
+      return res.status(400).json({
+        result: "error",
+        mensaje: `El rol '${datos.role}' no existe`
+      });
+    }
+
+    // Reemplazar string por ObjectId
+    datos.role = role._id;
+
+    const usuarioCreado = await agregarUsuarioService(datos);
+
+    return res.status(201).json({
+      result: "success",
+      data: renderizarUsuario(usuarioCreado)
+    });
+
+  } catch (error) {
+    console.error("❌ ERROR CONTROLLER:", error.message);
 
     return res.status(500).json({
       result: "error",
