@@ -92,7 +92,7 @@ export async function modificarPeliculaController(req, res) {
 // =======================================
 // CONTROLADOR: OBTENER TODAS LAS PELÍCULAS
 // =======================================
-export async function obtenerTodasLasPeliculasController(req, res) {
+{/*export async function obtenerTodasLasPeliculasController(req, res) {
   try {
     const peliculas = await obtenerTodasLasPeliculasService();
 
@@ -113,8 +113,24 @@ export async function obtenerTodasLasPeliculasController(req, res) {
       error: error.message,
     });
   }
-}
+}*/}
 
+export async function obtenerTodasLasPeliculasController(req, res) {
+  try {
+    const peliculas = await obtenerTodasLasPeliculasService();
+
+    res.json({
+      mensaje: "Películas obtenidas correctamente",
+      peliculas
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      mensaje: "Error al obtener las Películas",
+      error: error.message,
+    });
+  }
+}
 // =======================================
 // CONTROLADOR: AGREGAR PELÍCULA
 // =======================================
