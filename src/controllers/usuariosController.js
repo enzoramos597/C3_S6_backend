@@ -206,7 +206,7 @@ export async function agregarUsuarioController(req, res) {
     });
   }
 }*/}
-export async function modificarUsuarioController(req, res) {
+{/*export async function modificarUsuarioController(req, res) {
   try {
     const { id } = req.params;
     const datosActualizados = req.body;
@@ -263,6 +263,59 @@ export async function modificarUsuarioController(req, res) {
       error: error.message,
     });
   }
+}*/}
+
+//nuevo modificarusuariocontroller
+export async function modificarUsuarioController(req, res) {
+  try {
+    const { id } = req.params;
+    const datosActualizados = req.body; // Esto incluye { favoritos: ['id1', 'id2', ...] }
+
+    // ... (Código de validación de correo, que ya tienes)
+
+    // ====================================
+    // 2. Actualizar el Usuario en la DB
+    // ====================================
+    // 🛑 NECESITAS APLICAR EL UPDATE REAL AQUÍ
+    const usuarioActualizado = await Usuario.findByIdAndUpdate(
+      id, 
+      datosActualizados, // Aquí se pasan los 'favoritosIds'
+      { new: true } // Para retornar el documento modificado
+    );
+
+    if (!usuarioActualizado) {
+      return res.status(404).json({
+        result: "error",
+        mensaje: "Usuario no encontrado para la actualización"
+      });
+    }
+
+    // 3. Responder con éxito
+    // 💡 Asegúrate de no enviar datos sensibles como la contraseña o el token aquí
+    return res.status(200).json({
+      result: "ok",
+      mensaje: "Usuario modificado correctamente",
+      usuario: usuarioActualizado // O los datos que tu frontend espera para refrescar
+    });
+
+  } catch (error) {
+    console.error("Error al modificar usuario:", error);
+
+    // ✅ IMPORTANTE: Si es un CastError, daremos un mensaje más específico.
+    if (error.name === 'CastError') {
+      return res.status(400).json({
+        result: "error",
+        mensaje: "ID o formato de dato inválido.",
+        error: error.message
+      });
+    }
+    
+    return res.status(500).json({
+      result: "error",
+      mensaje: "Error al modificar usuario",
+      error: error.message // Muestra el error de Mongoose para debug
+    });
+  }
 }
 // =======================================
 // ELIMINAR USUARIO
