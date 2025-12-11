@@ -36,35 +36,30 @@ class AuthService {
   }
 
 
-// Login
-async login(correo, contrasenia) {
+  // Login
+  async login(correo, contrasenia) {
 
-  // Buscar usuario Y CARGAR FAVORITOS COMPLETOS 🔥
-  const user = await Usuario.findOne({ correo })
-    .populate("favoritos")
-    .populate("role")
-    .populate("perfiles");
+    // Buscar usuario
+    const user = await Usuario.findOne({ correo });
+    if (!user) {
+      throw new Error('Correo no encontrado');
+    }
 
-  if (!user) {
-    throw new Error('Correo no encontrado');
+    // Comparar contraseña
+    const isValidPassword = await bcrypt.compare(contrasenia, user.contrasenia);
+    if (!isValidPassword) {
+      throw new Error('Correo o contraseña incorrectos');
+    }
+
+    // Respuesta sin contraseña
+    const userResponse = user.toObject();
+    delete userResponse.contrasenia;
+
+    // Crear token
+    const token = this.generateToken(user);
+
+    return { user: userResponse, token };
   }
-
-  // Comparar contraseña
-  const isValidPassword = await bcrypt.compare(contrasenia, user.contrasenia);
-  if (!isValidPassword) {
-    throw new Error('Correo o contraseña incorrectos');
-  }
-
-  // Respuesta sin contraseña
-  const userResponse = user.toObject();
-  delete userResponse.contrasenia;
-
-  // Crear token
-  const token = this.generateToken(user);
-
-  return { user: userResponse, token };
-}
-
 
 
   // Generar token JWT
