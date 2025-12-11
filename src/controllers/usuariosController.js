@@ -1,4 +1,3 @@
-
 import {
   agregarUsuarioService,
   obtenerTodosUsuariosService,
@@ -9,9 +8,11 @@ import {
 
 import { obtenerTodosLosRolesService } from "../services/roleService.js";
 import Usuario from "../models/Usuario.js";
-import { renderizarListaUsuarios, renderizarUsuario } from "../views/responseViewUsuario.js";
+import {
+  renderizarListaUsuarios,
+  renderizarUsuario,
+} from "../views/responseViewUsuario.js";
 import Role from "../models/Role.js";
-
 
 // =======================================
 // OBTENER TODOS LOS USUARIOS
@@ -20,7 +21,8 @@ export async function obtenerTodosUsuariosController(req, res) {
   try {
     const usuarios = await obtenerTodosUsuariosService();
 
-    {/*res.render("usuarios/mostrarAllUsuarios", {
+    {
+      /*res.render("usuarios/mostrarAllUsuarios", {
       title: "Lista de Usuarios",
       usuariosFormateados: renderizarListaUsuarios(usuarios),  // ✅ AGREGAR "Formateados"
       navbarLinks: [
@@ -28,10 +30,11 @@ export async function obtenerTodosUsuariosController(req, res) {
         { text: "Usuarios", href: "/usuarios", icon: "/icons/user.svg" },
         { text: "Contacto", href: "/contact", icon: "/icons/contact.svg" },
       ],
-    });*/}
+    });*/
+    }
     res.json({
       mensaje: "Usuarios obtenidos correctamente",
-      usuarios
+      usuarios,
     });
   } catch (error) {
     res.status(500).send({
@@ -93,7 +96,8 @@ export async function mostrarAgregarUsuarioController(req, res) {
 // =======================================
 // CREAR USUARIO
 // =======================================
-{/*export async function agregarUsuarioController(req, res) {
+{
+  /*export async function agregarUsuarioController(req, res) {
   try {
     const datos = req.body;
 
@@ -120,7 +124,8 @@ export async function mostrarAgregarUsuarioController(req, res) {
       error: error.message,
     });
   }
-}*/}
+}*/
+}
 
 export async function agregarUsuarioController(req, res) {
   try {
@@ -161,9 +166,8 @@ export async function agregarUsuarioController(req, res) {
     return res.status(201).json({
       result: "success",
       mensaje: "Usuario creado correctamente",
-      data: usuarioCreado
+      data: usuarioCreado,
     });
-
   } catch (error) {
     console.error("❌ ERROR CONTROLLER:", error.message);
 
@@ -178,7 +182,8 @@ export async function agregarUsuarioController(req, res) {
 // =======================================
 // MODIFICAR USUARIO
 // =======================================
-{/*export async function modificarUsuarioController(req, res) {
+{
+  /*export async function modificarUsuarioController(req, res) {
   try {
     const { id } = req.params;
     const datosActualizados = req.body;
@@ -205,8 +210,10 @@ export async function agregarUsuarioController(req, res) {
       error: error.message,
     });
   }
-}*/}
-{/*export async function modificarUsuarioController(req, res) {
+}*/
+}
+{
+  /*export async function modificarUsuarioController(req, res) {
   try {
     const { id } = req.params;
     const datosActualizados = req.body;
@@ -263,59 +270,49 @@ export async function agregarUsuarioController(req, res) {
       error: error.message,
     });
   }
-}*/}
+}*/
+}
 
 //nuevo modificarusuariocontroller
 export async function modificarUsuarioController(req, res) {
-  try {
-    const { id } = req.params;
-    const datosActualizados = req.body; // Esto incluye { favoritos: ['id1', 'id2', ...] }
+  try {
+    const { id } = req.params;
+    const datosActualizados = req.body; // Esto incluye { favoritos: ['id1', 'id2', ...] } // ... (Código de validación de correo, que ya tienes) // ==================================== // 2. Actualizar el Usuario en la DB // ==================================== // 🛑 NECESITAS APLICAR EL UPDATE REAL AQUÍ
 
-    // ... (Código de validación de correo, que ya tienes)
+    const usuarioActualizado = await Usuario.findByIdAndUpdate(
+      id,
+      datosActualizados, // Aquí se pasan los 'favoritosIds'
+      { new: true } // Para retornar el documento modificado
+    );
 
-    // ====================================
-    // 2. Actualizar el Usuario en la DB
-    // ====================================
-    // 🛑 NECESITAS APLICAR EL UPDATE REAL AQUÍ
-    const usuarioActualizado = await Usuario.findByIdAndUpdate(
-      id, 
-      datosActualizados, // Aquí se pasan los 'favoritosIds'
-      { new: true } // Para retornar el documento modificado
-    );
+    if (!usuarioActualizado) {
+      return res.status(404).json({
+        result: "error",
+        mensaje: "Usuario no encontrado para la actualización",
+      });
+    } // 3. Responder con éxito // 💡 Asegúrate de no enviar datos sensibles como la contraseña o el token aquí
 
-    if (!usuarioActualizado) {
-      return res.status(404).json({
-        result: "error",
-        mensaje: "Usuario no encontrado para la actualización"
-      });
-    }
+    return res.status(200).json({
+      result: "ok",
+      mensaje: "Usuario modificado correctamente",
+      usuario: usuarioActualizado, // O los datos que tu frontend espera para refrescar
+    });
+  } catch (error) {
+    console.error("Error al modificar usuario:", error); // ✅ IMPORTANTE: Si es un CastError, daremos un mensaje más específico.
 
-    // 3. Responder con éxito
-    // 💡 Asegúrate de no enviar datos sensibles como la contraseña o el token aquí
-    return res.status(200).json({
-      result: "ok",
-      mensaje: "Usuario modificado correctamente",
-      usuario: usuarioActualizado // O los datos que tu frontend espera para refrescar
-    });
-
-  } catch (error) {
-    console.error("Error al modificar usuario:", error);
-
-    // ✅ IMPORTANTE: Si es un CastError, daremos un mensaje más específico.
-    if (error.name === 'CastError') {
-      return res.status(400).json({
-        result: "error",
-        mensaje: "ID o formato de dato inválido.",
-        error: error.message
-      });
-    }
-    
-    return res.status(500).json({
-      result: "error",
-      mensaje: "Error al modificar usuario",
-      error: error.message // Muestra el error de Mongoose para debug
-    });
-  }
+    if (error.name === "CastError") {
+      return res.status(400).json({
+        result: "error",
+        mensaje: "ID o formato de dato inválido.",
+        error: error.message,
+      });
+    }
+    return res.status(500).json({
+      result: "error",
+      mensaje: "Error al modificar usuario",
+      error: error.message, // Muestra el error de Mongoose para debug
+    });
+  }
 }
 // =======================================
 // ELIMINAR USUARIO
