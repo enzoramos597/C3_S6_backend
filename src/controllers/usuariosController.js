@@ -273,7 +273,7 @@ export async function eliminarUsuarioController(req, res) {
 
     await eliminarUsuarioService(id);
 
-    res.json({ result: "success" });
+    res.json({ result: "success, Usuario eliminado satisfactoriamente" });
   } catch (error) {
     return res.status(404).json({
       result: "error",

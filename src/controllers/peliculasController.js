@@ -49,6 +49,38 @@ export async function obtenerPeliculaIdController(req, res) {
   }
 }
 
+export async function obtenerPeliculaId2Controller(req, res) {
+  try {
+    const { id } = req.params;
+    console.log(`Traer ID de Película:`, id);
+
+    // 1. Llama al servicio para obtener la película
+    const pelicula = await obtenerPeliculaIdService(id);
+
+    // 2. Manejo de error si la película no existe
+    if (!pelicula) {
+      // Devuelve 404 con un mensaje JSON
+      return res.status(404).json({ mensaje: "Película no encontrada" });
+    }
+
+    // 3. RESPUESTA DE API REST (JSON)
+    // En lugar de res.render, devolvemos la película como JSON con status 200 (OK)
+    return res.status(200).json({
+      mensaje: "Película obtenida correctamente",
+      pelicula: pelicula, // Devuelve el objeto de la película
+    });
+    
+  } catch (error) {
+    console.error(error);
+    
+    // Manejo de error del servidor (500)
+    return res.status(500).json({
+      mensaje: "Error interno del servidor al obtener la Película",
+      error: error.message,
+    });
+  }
+}
+
 // =======================================
 // CONTROLADOR: MODIFICAR PELÍCULA
 // =======================================
