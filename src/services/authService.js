@@ -37,7 +37,7 @@ class AuthService {
 
 
   // Login
-  async login(correo, contrasenia) {
+  /*async login(correo, contrasenia) {
 
     // Buscar usuario
     const user = await Usuario.findOne({ correo });
@@ -59,7 +59,40 @@ class AuthService {
     const token = this.generateToken(user);
 
     return { user: userResponse, token };
+  }*/
+
+  // Login Nuevo
+  async login(correo, contrasenia) {
+
+  // Buscar usuario con ROLE poblado
+  const user = await Usuario.findOne({ correo }).populate("role");
+  if (!user) {
+    throw new Error('Correo no encontrado');
   }
+
+  // Comparar contraseña
+  const isValidPassword = await bcrypt.compare(contrasenia, user.contrasenia);
+  if (!isValidPassword) {
+    throw new Error('Correo o contraseña incorrectos');
+  }
+
+  // Respuesta sin contraseña
+  const userResponse = user.toObject();
+  delete userResponse.contrasenia;
+
+  // Crear token CON EL NOMBRE DEL ROLE
+  const token = jwt.sign(
+    {
+      id: user._id,
+      role: user.role.nombre, // ← AHORA ES "admin", "user", etc.
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: "4h" }
+  );
+
+  return { user: userResponse, token };
+}
+
 
 
   // Generar token JWT
