@@ -45,11 +45,13 @@ const UsuarioSchema = new mongoose.Schema(
     ],
 
     // 🔥 El único que define permisos
-    role: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Role",
-      required: true, // recomendable
-    },
+    perfiles: [
+  {
+    name: { type: String, required: true },
+    avatar: { type: String, default: "" },
+    createdAt: { type: Date, default: Date.now } // opcional
+  }
+],
   },
   { timestamps: true }
 );
