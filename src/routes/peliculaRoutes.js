@@ -5,7 +5,9 @@ import {
     agregarPeliculaController,
     eliminarPeliculaController,
     obtenerPeliculaId2Controller,
-    obtenerTodasLasPeliculasController
+    //oobtenerPeliculaId3Controller,
+    obtenerTodasLasPeliculasController,
+    obtenerPeliculaId3Controller
 } from '../controllers/peliculasController.js'
 
 import {
@@ -49,7 +51,7 @@ routerPeli.post('/auth/login', login);
 //Routes Peliculas
 routerPeli.get('/mostrarPelicula', authenticateToken, hasPermission('read:peliculas'), obtenerTodasLasPeliculasController)
 routerPeli.get('/modificarPelicula-id/:id', hasPermission('update:peliculas'), obtenerPeliculaIdController)
-routerPeli.get('/peliculas/:id', authenticateToken, hasPermission('read:peliculas'), obtenerPeliculaId2Controller);
+routerPeli.get('/peliculas/:id', authenticateToken, obtenerPeliculaId3Controller);
 routerPeli.post('/agregarPelicula', authenticateToken, hasPermission('create:peliculas'), peliculaValidationRules(), validationHandler, agregarPeliculaController);
 routerPeli.put('/modificarPelicula/:id', authenticateToken,hasPermission('update:peliculas'), peliculaValidationRules(), validationHandler ,modificarPeliculaController);
 routerPeli.delete('/eliminarPelicula/:id', authenticateToken, hasPermission('delete:peliculas'), eliminarPeliculaController);
@@ -71,10 +73,11 @@ routerPeli.delete("/eliminarUsuario/:id", eliminarUsuarioController);*/}
 
 // Mostrar todos
 routerPeli.get("/mostrarUsuarios", authenticateToken, hasPermission('read:usuario'), obtenerTodosUsuariosController);
+routerPeli.get("/peliculas/:id", authenticateToken, hasPermission('read:peliculas'), obtenerPeliculaId3Controller);
 routerPeli.post("/agregarUsuario", agregarUsuarioController);
 routerPeli.put("/modificarUsuario/:id", authenticateToken, hasPermission('update:usuario'), modificarUsuarioController);
 routerPeli.delete("/eliminarUsuario/:id", authenticateToken, hasPermission('delete:usuario'),eliminarUsuarioController);
-routerPeli.get("/agregarUsuario", mostrarAgregarUsuarioController);
+//routerPeli.get("/agregarUsuario", mostrarAgregarUsuarioController);
 //routerPeli.get("/modificarUsuario-id", obtenerUsuarioIdController)
 // Crear usuario (POST)
 //routerPeli.post("/agregarUsuario", agregarUsuarioController);
