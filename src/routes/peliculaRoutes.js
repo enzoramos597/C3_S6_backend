@@ -77,6 +77,7 @@ routerPeli.get("/mostrarUsuarios", authenticateToken, hasPermission('read:usuari
 routerPeli.get("/peliculas/:id", authenticateToken, hasPermission('read:peliculas'), obtenerPeliculaId3Controller);
 routerPeli.post("/agregarUsuario", agregarUsuarioController);
 routerPeli.put("/modificarUsuario/:id", authenticateToken, hasPermission('update:usuario'), modificarUsuarioController);
+routerPeli.put("/modificarUsuarioUser/:id", authenticateToken, modificarUsuarioController);
 routerPeli.delete("/eliminarUsuario/:id", authenticateToken, hasPermission('delete:usuario'),eliminarUsuarioController);
 //routerPeli.get("/agregarUsuario", mostrarAgregarUsuarioController);
 //routerPeli.get("/modificarUsuario-id", obtenerUsuarioIdController)
