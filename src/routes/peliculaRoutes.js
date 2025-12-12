@@ -41,6 +41,14 @@ import {
     mostrarPermisosController
 } from '../controllers/permisosController.js'
 
+import {
+    obtenerPerfilesUsuarioController,
+    crearPerfilController,
+    editarPerfilController,
+    eliminarPerfilController,
+    obtenerPerfilController
+} from '../controllers/perfilController.js'
+
 import { peliculaValidationRules } from '../validaciones/peliculaValidationRules.js';
 import { validationHandler } from '../validaciones/errorMiddleware.js';
 import { login } from '../controllers/authController.js'
@@ -87,16 +95,21 @@ routerPeli.delete("/eliminarUsuario/:id", authenticateToken, hasPermission('dele
 // Formulario modificar usuario
 //trae usuario por id y tiene que tener su mismo id 
 routerPeli.get("/traerunusuario/:id", authenticateToken, traerUnUsuarioController );
-routerPeli.get("/usuario/:id", authenticateToken, obtenerUsuarioId2Controller)
+//routerPeli.get("/usuario/:id", authenticateToken, obtenerUsuarioId2Controller)
 //trae usuario por id de cualquier eso si tiene que ser admin para consultar otro usuario
 routerPeli.get("/usuarios/:id", authenticateToken, obtenerUsuarioId3Controller)
 routerPeli.get("/usuarioadmin/:id", authenticateToken, obtenerUsuarioIdAdminController);
 
-// Guardar modificación de usuario
-//routerPeli.post("/modificarUsuario/:id", modificarUsuarioController);
-
-// Eliminar usuario
-//routerPeli.delete("/eliminarUsuario/:id", eliminarUsuarioController);
+// 📌 LISTAR perfiles de un usuario
+routerPeli.get("/usuario/:id/perfiles", authenticateToken, obtenerPerfilesUsuarioController);
+// 📌 CREAR perfil nuevo
+routerPeli.post("/usuario/:id/perfiles", authenticateToken, crearPerfilController);
+// 📌 EDITAR un perfil existente
+routerPeli.put("/usuario/:id/perfiles/:perfilId", authenticateToken, editarPerfilController);
+// 📌 ELIMINAR un perfil
+routerPeli.delete("/usuario/:id/perfiles/:perfilId", authenticateToken, eliminarPerfilController);
+// 📌 TRAER un perfil
+routerPeli.get("/usuario/:usuarioId/perfiles/:perfilId", authenticateToken, obtenerPerfilController);
 
 
 //Roles

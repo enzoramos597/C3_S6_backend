@@ -118,6 +118,25 @@ async agregarUsuarioRepository(data) {
 
     return eliminado;
   }
+
+  //perfiles
+  agregarPerfil(usuarioId, perfilId) {
+  return Usuario.findByIdAndUpdate(
+    usuarioId,
+    { $push: { perfiles: perfilId } },
+    { new: true }
+  );
+}
+
+removerPerfil(usuarioId, perfilId) {
+  return Usuario.findByIdAndUpdate(
+    usuarioId,
+    { $pull: { perfiles: perfilId } },
+    { new: true }
+  );
+}
+
+  
 }
 
 export default new UsuarioRepository();
