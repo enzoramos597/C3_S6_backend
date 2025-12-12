@@ -410,7 +410,7 @@ export async function eliminarUsuarioController(req, res) {
   }
 }
 
-export async function obtenerUsuarioIdAdminController(req, res) {
+/*export async function obtenerUsuarioIdAdminController(req, res) {
   try {
     const { id } = req.params;
 
@@ -455,5 +455,52 @@ export async function obtenerUsuarioIdAdminController(req, res) {
       error: error.message,
     });
   }
+}*/
+
+
+export async function obtenerUsuarioIdAdminController(req, res) {
+  try {
+    const { id } = req.params;
+
+    // 1. Verificar token válido
+    if (!req.user) {
+      return res.status(401).json({
+        result: "error",
+        mensaje: "Token no válido o faltante",
+      });
+    }
+
+    // 2. Verificar que el usuario sea admin
+    if (req.user.role !== "admin") {
+      return res.status(403).json({
+        result: "error",
+        mensaje: "Acceso denegado: solo administradores",
+      });
+    }
+
+    // 3. Buscar usuario por ID
+    const usuario = await obtenerUsuarioIdService(id);
+
+    if (!usuario) {
+      return res.status(404).json({
+        result: "error",
+        mensaje: "Usuario no encontrado",
+      });
+    }
+
+    // 4. Respuesta final
+    return res.json({
+      result: "success",
+      data: usuario,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      result: "error",
+      mensaje: "Error al obtener el usuario",
+      error: error.message,
+    });
+  }
 }
+
 
