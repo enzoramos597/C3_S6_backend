@@ -25,14 +25,9 @@ export async function obtenerTodosLosRolesController(req, res) {
     const rolesFormateados = renderizarListaRoles(roles);
 
     // Renderizar la vista EJS
-    res.render("roles/mostrarAllRole", {
-      title: "Lista de Roles",
-      rolesFormateados,
-      navbarLinks: [
-        { text: "Inicio", href: "/", icon: "/icons/home.svg" },
-        { text: "Permisos", href: "/permissions", icon: "/icons/info.svg" },
-        { text: "Contacto", href: "/contact", icon: "/icons/contact.svg" },
-      ],
+   return res.json({
+      result: "success",
+      data: roles
     });
   } catch (error) {
     res.status(500).send({
