@@ -19,7 +19,8 @@ import {
     mostrarAgregarUsuarioController,
     obtenerUsuarioId2Controller,
     obtenerUsuarioId3Controller,
-    obtenerUsuarioIdAdminController
+    obtenerUsuarioIdAdminController,
+    traerUnUsuarioController
 } from '../controllers/usuariosController.js'
 
 
@@ -84,6 +85,7 @@ routerPeli.delete("/eliminarUsuario/:id", authenticateToken, hasPermission('dele
 
 // Formulario modificar usuario
 //trae usuario por id y tiene que tener su mismo id 
+routerPeli.get("/traerunusuario/:id", authenticateToken, traerUnUsuarioController );
 routerPeli.get("/usuario/:id", authenticateToken, obtenerUsuarioId2Controller)
 //trae usuario por id de cualquier eso si tiene que ser admin para consultar otro usuario
 routerPeli.get("/usuarios/:id", authenticateToken, obtenerUsuarioId3Controller)

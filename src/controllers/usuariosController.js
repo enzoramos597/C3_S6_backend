@@ -502,5 +502,31 @@ export async function obtenerUsuarioIdAdminController(req, res) {
     });
   }
 }
+//Traer un usuario que sea admin o user
+export async function traerUnUsuarioController(req, res) {
+  try {
+    const { id } = req.params;
+
+    const usuario = await obtenerUsuarioIdService(id);
+
+    // Si quieres restringir a roles admin/user:
+    if (!["admin", "user"].includes(usuario.role?.name)) {
+      return res.status(403).json({
+        mensaje: "El usuario no tiene un rol válido (admin o user)",
+      });
+    }
+
+    return res.status(200).json({
+      mensaje: "Usuario encontrado",
+      usuario,
+    });
+
+  } catch (error) {
+    return res.status(404).json({
+      mensaje: "Usuario no encontrado",
+      error: error.message,
+    });
+  }
+}
 
 
