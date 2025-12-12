@@ -84,8 +84,8 @@ routerPeli.get("/agregarUsuario", mostrarAgregarUsuarioController);
 routerPeli.get("/usuario/:id", authenticateToken, obtenerUsuarioId2Controller)
 //trae usuario por id de cualquier eso si tiene que ser admin para consultar otro usuario
 routerPeli.get("/usuarios/:id", authenticateToken, obtenerUsuarioId3Controller)
-routerPeli.get("usuarioadmin/:id", authenticateToken, hasPermission('read:usuario'),
-obtenerUsuarioIdAdminController)
+routerPeli.get("/usuarioadmin/:id", authenticateToken, obtenerUsuarioIdAdminController);
+
 // Guardar modificación de usuario
 //routerPeli.post("/modificarUsuario/:id", modificarUsuarioController);
 
