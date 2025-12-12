@@ -15,6 +15,8 @@ import {
     eliminarUsuarioController,
     modificarUsuarioController,
     mostrarAgregarUsuarioController,
+    obtenerUsuarioId2Controller,
+    obtenerUsuarioId3Controller
 } from '../controllers/usuariosController.js'
 
 
@@ -77,8 +79,10 @@ routerPeli.get("/agregarUsuario", mostrarAgregarUsuarioController);
 //routerPeli.post("/agregarUsuario", agregarUsuarioController);
 
 // Formulario modificar usuario
-routerPeli.get("/usuarios/:id", obtenerUsuarioIdController);
-
+//trae usuario por id y tiene que tener su mismo id 
+routerPeli.get("/usuario/:id", authenticateToken, obtenerUsuarioId2Controller)
+//trae usuario por id de cualquier eso si tiene que ser admin para consultar otro usuario
+routerPeli.get("/usuarios/:id", authenticateToken, obtenerUsuarioId3Controller)
 // Guardar modificación de usuario
 //routerPeli.post("/modificarUsuario/:id", modificarUsuarioController);
 

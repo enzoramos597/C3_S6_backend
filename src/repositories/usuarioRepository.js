@@ -77,7 +77,6 @@ async agregarUsuarioRepository(data) {
     if (!usuario) {
       throw new Error("Usuario no encontrado");
     }
-
     return usuario;
   }
 

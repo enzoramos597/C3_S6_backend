@@ -8,6 +8,7 @@ import {
 
 import { obtenerTodosLosRolesService } from "../services/roleService.js";
 import Usuario from "../models/Usuario.js";
+//import Role from "../models/Role.js";
 import {
   renderizarListaUsuarios,
   renderizarUsuario,
@@ -72,6 +73,83 @@ export async function obtenerUsuarioIdController(req, res) {
   }
 }
 
+// Nuevo obtenerUsuarioIdController
+export async function obtenerUsuarioId2Controller(req, res) {
+  try {
+    const { id } = req.params;
+
+    // 🚨 Seguridad: solo ver su propio usuario
+    if (req.user.id !== id) {
+      return res.status(401).json({
+        result: "error",
+        mensaje: "No estás autorizado para ver este usuario",
+      });
+    }
+
+    const usuario = await obtenerUsuarioIdService(id);
+
+    return res.json({
+      result: "success",
+      data: usuario,
+    });
+
+  } catch (error) {
+    return res.status(404).json({
+      result: "error",
+      mensaje: "Usuario no encontrado",
+      error: error.message,
+    });
+  }
+}
+
+
+export async function obtenerUsuarioId3Controller(req, res) {
+  try {
+    // 1. Verificar token válido
+    if (!req.user || !req.user.role) {
+      return res.status(401).json({
+        result: "error",
+        mensaje: "Token no válido o faltante",
+      });
+    }
+
+    // 2. Buscar el role en la BD usando el ID del token
+    const roleDB = await Role.findById(req.user.role);
+
+    if (!roleDB) {
+      return res.status(403).json({
+        result: "error",
+        mensaje: "Rol no encontrado",
+      });
+    }
+
+    // 3. Validar si es admin
+    if (roleDB.name !== "admin") {
+      return res.status(403).json({
+        result: "error",
+        mensaje: "Acceso denegado: solo administradores pueden ver todos los usuarios",
+      });
+    }
+
+    // 4. Obtener todos los usuarios
+    const usuarios = await obtenerTodosUsuariosService();
+
+    return res.json({
+      result: "success",
+      data: usuarios,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      result: "error",
+      mensaje: "Error al obtener los usuarios",
+      error: error.message
+    });
+  }
+}
+
+
+
 // =======================================
 // FORMULARIO AGREGAR
 // =======================================
@@ -125,7 +203,7 @@ export async function mostrarAgregarUsuarioController(req, res) {
     });
   }
 }*/
-}
+} 
 
 export async function agregarUsuarioController(req, res) {
   try {
