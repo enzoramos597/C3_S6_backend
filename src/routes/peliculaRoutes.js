@@ -16,7 +16,8 @@ import {
     modificarUsuarioController,
     mostrarAgregarUsuarioController,
     obtenerUsuarioId2Controller,
-    obtenerUsuarioId3Controller
+    obtenerUsuarioId3Controller,
+    obtenerUsuarioIdAdminController
 } from '../controllers/usuariosController.js'
 
 
@@ -83,6 +84,8 @@ routerPeli.get("/agregarUsuario", mostrarAgregarUsuarioController);
 routerPeli.get("/usuario/:id", authenticateToken, obtenerUsuarioId2Controller)
 //trae usuario por id de cualquier eso si tiene que ser admin para consultar otro usuario
 routerPeli.get("/usuarios/:id", authenticateToken, obtenerUsuarioId3Controller)
+routerPeli.get("usuarioadmin/:id", authenticateToken, hasPermission('read:usuario'),
+obtenerUsuarioIdAdminController)
 // Guardar modificación de usuario
 //routerPeli.post("/modificarUsuario/:id", modificarUsuarioController);
 
