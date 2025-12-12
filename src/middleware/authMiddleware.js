@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import Usuario from '../models/Usuario.js';
 
-export const authenticateToken = (req, res, next) => {
+/*export const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1]; // Formato: "Bearer TOKEN"
     
@@ -16,7 +16,33 @@ export const authenticateToken = (req, res, next) => {
     } catch (error) {
         return res.status(403).json({ message: 'Token inválido o expirado' });
     }
-};
+};*/
+
+
+
+export function authenticateToken(req, res, next) {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({ mensaje: "Token no proporcionado" });
+  }
+
+  const token = authHeader.split(" ")[1]; // "Bearer token"
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, decodedUser) => {
+    if (err) {
+      return res.status(403).json({ mensaje: "Token inválido" });
+    }
+
+    // MUY IMPORTANTE
+    req.user = decodedUser;
+
+    console.log("USUARIO DEL TOKEN:", req.user);
+
+    next();
+  });
+}
+
 
 export const hasPermission = (requiredPermission) => {
     return async (req, res, next) => {

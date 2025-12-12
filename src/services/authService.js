@@ -4,20 +4,16 @@ import jwt from 'jsonwebtoken';
 
 class AuthService {
 
-  // Registrar usuario
+  // ============================
+  // REGISTER
+  // ============================
   async register(userData) {
 
-    // Verificar si ya existe
     const existingUser = await Usuario.findOne({ correo: userData.correo });
+    if (existingUser) throw new Error('El correo ya está registrado');
 
-    if (existingUser) {
-      throw new Error('El correo ya está registrado');
-    }
-
-    // Encriptar contraseña
     const hashedPassword = await bcrypt.hash(userData.contrasenia, 10);
 
-    // Crear usuario
     const user = new Usuario({
       ...userData,
       contrasenia: hashedPassword
@@ -25,78 +21,72 @@ class AuthService {
 
     await user.save();
 
-    // Respuesta sin contraseña
     const userResponse = user.toObject();
     delete userResponse.contrasenia;
 
-    // Crear token
-    const token = this.generateToken(user);
+    // IMPORTANTE:
+    // role en user = ObjectId
+    // Por eso hacemos populate ANTES de generar token
+    const userWithRole = await Usuario.findById(user._id).populate("role");
+
+    const token = this.generateToken(userWithRole);
 
     return { user: userResponse, token };
   }
 
 
-  // Login
-  /*async login(correo, contrasenia) {
+  // ============================
+  // LOGIN
+  // ============================
+  async login(correo, contrasenia) {
 
-    // Buscar usuario
-    const user = await Usuario.findOne({ correo });
+    // 1. Buscar usuario CON rol poblado
+    const user = await Usuario.findOne({ correo }).populate("role");
+    
     if (!user) {
       throw new Error('Correo no encontrado');
     }
 
-    // Comparar contraseña
+    // 2. Comparar contraseña
     const isValidPassword = await bcrypt.compare(contrasenia, user.contrasenia);
+    
     if (!isValidPassword) {
       throw new Error('Correo o contraseña incorrectos');
     }
 
-    // Respuesta sin contraseña
+    // 3. Validar que tenga rol asignado
+    if (!user.role) {
+      throw new Error('Usuario sin rol asignado');
+    }
+
+    // 4. Respuesta sin contraseña
     const userResponse = user.toObject();
     delete userResponse.contrasenia;
 
-    // Crear token
-    const token = this.generateToken(user);
+    // ============================
+    // 5. CREAR TOKEN CON NOMBRE DEL ROL
+    // ============================
+    const token = jwt.sign(
+      {
+        id: user._id,
+        role: user.role.name, // ← IMPORTANTE: usar "name", no "_id"
+        roleId: user.role._id  // Por si necesitas el ID también
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "24h" }
+    );
 
-    return { user: userResponse, token };
-  }*/
-
-  // Login Nuevo
-  async login(correo, contrasenia) {
-
-  // Buscar usuario con ROLE poblado
-  const user = await Usuario.findOne({ correo }).populate("role");
-  if (!user) {
-    throw new Error('Correo no encontrado');
+    return { 
+      user: userResponse, 
+      token 
+    };
   }
 
-  // Comparar contraseña
-  const isValidPassword = await bcrypt.compare(contrasenia, user.contrasenia);
-  if (!isValidPassword) {
-    throw new Error('Correo o contraseña incorrectos');
-  }
 
-  // Respuesta sin contraseña
-  const userResponse = user.toObject();
-  delete userResponse.contrasenia;
-
-  // Crear token CON EL NOMBRE DEL ROLE
-  const token = jwt.sign(
-    {
-      id: user._id,
-      role: user.role.nombre, // ← AHORA ES "admin", "user", etc.
-    },
-    process.env.JWT_SECRET,
-    { expiresIn: "4h" }
-  );
-
-  return { user: userResponse, token };
-}
-
-
-
-  // Generar token JWT
-  generateToken(user) {
+  // ============================
+  // GENERAR TOKEN CORRECTO
+  // ============================
+   generateToken(user) {
     return jwt.sign(
       {
         id: user._id,
@@ -106,6 +96,7 @@ class AuthService {
       { expiresIn: "24h" }
     );
   }
+
 }
 
 export default new AuthService();

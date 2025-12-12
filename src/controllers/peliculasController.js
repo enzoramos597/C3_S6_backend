@@ -220,40 +220,30 @@ export async function obtenerPeliculaId3Controller(req, res) {
   try {
     const { id } = req.params;
 
-    console.log(`Traer ID de Película:`, id);
+    console.log("Traer ID:", id);
+    console.log("Usuario:", req.user);
 
-    // ============================
-    // VALIDAR PERMISOS
-    // ============================
     if (!req.user) {
       return res.status(401).json({ mensaje: "Token inválido o ausente" });
     }
-
-    // Solo admin puede acceder a cualquier película
+    console.log("TOKEN DECODIFICADO:", req.user);
     if (req.user.role !== "admin") {
       return res.status(403).json({ mensaje: "No tiene permisos para ver esta película" });
     }
 
-    // ============================
-    // BUSCAR PELÍCULA
-    // ============================
     const pelicula = await obtenerPeliculaIdService(id);
 
     if (!pelicula) {
       return res.status(404).json({ mensaje: "Película no encontrada" });
     }
 
-    return res.status(200).json({
-      pelicula
-    });
+    return res.status(200).json({ pelicula });
 
   } catch (error) {
     console.error(error);
     return res.status(500).json({
-      mensaje: "Error interno del servidor al obtener la película",
+      mensaje: "Error interno del servidor",
       error: error.message,
     });
   }
 }
-
-
