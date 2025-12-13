@@ -82,12 +82,14 @@ routerPeli.delete("/eliminarUsuario/:id", eliminarUsuarioController);*/}
 
 // Mostrar todos
 routerPeli.get("/mostrarUsuarios", authenticateToken, hasPermission('read:usuario'), obtenerTodosUsuariosController);
+routerPeli.get("/recorrerUsuariosintoken",  obtenerTodosUsuariosController);
 routerPeli.get("/peliculas/:id", authenticateToken, hasPermission('read:peliculas'), obtenerPeliculaId3Controller);
 routerPeli.get("/peliculasuser/:id", authenticateToken, obtenerPeliculaId4Controller);
 routerPeli.post("/agregarUsuario", agregarUsuarioController);
 routerPeli.put("/modificarUsuario/:id", authenticateToken, modificarUsuarioController);
 routerPeli.put("/modificarUsuarioUser/:id", authenticateToken, modificarUsuarioController);
 routerPeli.delete("/eliminarUsuario/:id", authenticateToken, hasPermission('delete:usuario'),eliminarUsuarioController);
+
 //routerPeli.get("/agregarUsuario", mostrarAgregarUsuarioController);
 //routerPeli.get("/modificarUsuario-id", obtenerUsuarioIdController)
 // Crear usuario (POST)
