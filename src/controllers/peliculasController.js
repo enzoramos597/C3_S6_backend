@@ -247,3 +247,35 @@ export async function obtenerPeliculaId3Controller(req, res) {
     });
   }
 }
+
+export async function obtenerPeliculaId4Controller(req, res) {
+  try {
+    const { id } = req.params;
+
+    console.log("Traer ID:", id);
+    console.log("Usuario:", req.user);
+
+    if (!req.user) {
+      return res.status(401).json({ mensaje: "Token inválido o ausente" });
+    }
+    console.log("TOKEN DECODIFICADO:", req.user);
+    if (req.user.role !== "user" && req.user.role !== "admin") {
+      return res.status(403).json({ mensaje: "No tiene permisos para ver esta película" });
+    }
+
+    const pelicula = await obtenerPeliculaIdService(id);
+
+    if (!pelicula) {
+      return res.status(404).json({ mensaje: "Película no encontrada" });
+    }
+
+    return res.status(200).json({ pelicula });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      mensaje: "Error interno del servidor",
+      error: error.message,
+    });
+  }
+}

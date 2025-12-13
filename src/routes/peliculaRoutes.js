@@ -4,7 +4,7 @@ import {
     modificarPeliculaController,
     agregarPeliculaController,
     eliminarPeliculaController,
-    obtenerPeliculaId2Controller,
+    obtenerPeliculaId4Controller,
     //oobtenerPeliculaId3Controller,
     obtenerTodasLasPeliculasController,
     obtenerPeliculaId3Controller
@@ -83,6 +83,7 @@ routerPeli.delete("/eliminarUsuario/:id", eliminarUsuarioController);*/}
 // Mostrar todos
 routerPeli.get("/mostrarUsuarios", authenticateToken, hasPermission('read:usuario'), obtenerTodosUsuariosController);
 routerPeli.get("/peliculas/:id", authenticateToken, hasPermission('read:peliculas'), obtenerPeliculaId3Controller);
+routerPeli.get("/peliculasuser/:id", authenticateToken, obtenerPeliculaId4Controller);
 routerPeli.post("/agregarUsuario", agregarUsuarioController);
 routerPeli.put("/modificarUsuario/:id", authenticateToken, hasPermission('update:usuario'), modificarUsuarioController);
 routerPeli.put("/modificarUsuarioUser/:id", authenticateToken, modificarUsuarioController);
